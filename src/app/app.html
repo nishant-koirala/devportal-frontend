@@ -8,16 +8,20 @@
   <p class="status"><span class="dot"></span> Local preview</p>
 </header>
 
+<p class="banner">Draft UI only · API search and live catalog are coming next.</p>
+
 <main class="hero" id="overview">
   <label class="search">
     <span class="visually-hidden">Search the portal</span>
     <input type="search" placeholder="Search APIs, docs, and guides" disabled />
+    <span class="hint">Search is disabled until the catalog is connected.</span>
   </label>
 
   <section class="card">
     <p class="eyebrow">Developer Portal</p>
     <h1>Hello, {{ title() }}</h1>
     <p class="lede">Browse APIs, docs, and getting-started notes from one place.</p>
+    <p class="meta">Local API · http://localhost:8080/api/v1</p>
     <div class="actions">
       <a class="button" href="#apis">View APIs</a>
       <a class="button button-ghost" href="#docs">Read docs</a>
@@ -29,22 +33,26 @@
       <p class="tile-label">Catalog</p>
       <h2>APIs</h2>
       <p>Find endpoints and try them against the local backend.</p>
+      <a class="tile-link" href="#apis">Open</a>
     </article>
     <article class="tile" id="docs">
       <p class="tile-label">Guides</p>
       <h2>Docs</h2>
       <p>Short guides for auth, environments, and first requests.</p>
+      <a class="tile-link" href="#docs">Open</a>
     </article>
     <article class="tile">
       <p class="tile-label">Setup</p>
       <h2>Getting started</h2>
       <p>Use the local API at localhost:8080 while this UI is on 4200.</p>
+      <a class="tile-link" href="#overview">Open</a>
     </article>
   </section>
 </main>
 
 <footer class="footer">
   <p>Dev Portal · draft layout</p>
+  <a href="#docs">Docs</a>
   <p class="muted">Not connected to live data yet</p>
 </footer>
 
