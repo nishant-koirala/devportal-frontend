@@ -1,13 +1,19 @@
 <header class="topbar">
-  <p class="brand">Dev Portal</p>
+  <p class="brand">Dev Portal <span class="badge">v0.1</span></p>
   <nav class="nav" aria-label="Primary">
     <a href="#overview">Overview</a>
     <a href="#apis">APIs</a>
+    <a href="#docs">Docs</a>
   </nav>
   <p class="status"><span class="dot"></span> Local preview</p>
 </header>
 
 <main class="hero" id="overview">
+  <label class="search">
+    <span class="visually-hidden">Search the portal</span>
+    <input type="search" placeholder="Search APIs, docs, and guides" disabled />
+  </label>
+
   <section class="card">
     <p class="eyebrow">Developer Portal</p>
     <h1>Hello, {{ title() }}</h1>
@@ -20,18 +26,26 @@
 
   <section class="tiles" id="apis">
     <article class="tile">
+      <p class="tile-label">Catalog</p>
       <h2>APIs</h2>
       <p>Find endpoints and try them against the local backend.</p>
     </article>
     <article class="tile" id="docs">
+      <p class="tile-label">Guides</p>
       <h2>Docs</h2>
       <p>Short guides for auth, environments, and first requests.</p>
+    </article>
+    <article class="tile">
+      <p class="tile-label">Setup</p>
+      <h2>Getting started</h2>
+      <p>Use the local API at localhost:8080 while this UI is on 4200.</p>
     </article>
   </section>
 </main>
 
 <footer class="footer">
   <p>Dev Portal · draft layout</p>
+  <p class="muted">Not connected to live data yet</p>
 </footer>
 
 <router-outlet />

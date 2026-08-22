@@ -9,6 +9,15 @@
   font-family: "Segoe UI", system-ui, sans-serif;
 }
 
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
 .topbar {
   display: flex;
   align-items: center;
@@ -20,9 +29,21 @@
 }
 
 .brand {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   margin: 0;
   font-weight: 650;
   letter-spacing: 0.02em;
+}
+
+.badge {
+  padding: 0.12rem 0.4rem;
+  border-radius: 999px;
+  background: #eef3ff;
+  color: #2f5fd0;
+  font-size: 0.7rem;
+  font-weight: 700;
 }
 
 .nav {
@@ -45,8 +66,12 @@
   align-items: center;
   gap: 0.4rem;
   margin: 0;
-  color: #4b5b76;
-  font-size: 0.875rem;
+  padding: 0.28rem 0.6rem;
+  border: 1px solid #d7eadf;
+  border-radius: 999px;
+  background: #f3fbf6;
+  color: #2c6a48;
+  font-size: 0.8rem;
 }
 
 .dot {
@@ -58,9 +83,24 @@
 
 .hero {
   flex: 1;
-  width: min(48rem, calc(100% - 2rem));
+  width: min(52rem, calc(100% - 2rem));
   margin: 0 auto;
-  padding: 3.5rem 0 2rem;
+  padding: 2.4rem 0 2rem;
+}
+
+.search {
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.search input {
+  width: 100%;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid #dce3f0;
+  border-radius: 0.75rem;
+  background: #fff;
+  color: #6b7890;
+  font: inherit;
 }
 
 .card {
@@ -111,14 +151,22 @@ h1 {
   text-decoration: none;
 }
 
+.button:hover {
+  background: #254fb0;
+}
+
 .button-ghost {
   background: #eef3ff;
   color: #2f5fd0;
 }
 
+.button-ghost:hover {
+  background: #dce7ff;
+}
+
 .tiles {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 0.9rem;
   margin-top: 1rem;
 }
@@ -128,6 +176,19 @@ h1 {
   border: 1px solid #dce3f0;
   border-radius: 0.85rem;
   background: #fff;
+}
+
+.tile:hover {
+  border-color: #b9c8ea;
+}
+
+.tile-label {
+  margin: 0 0 0.45rem;
+  color: #2f5fd0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .tile h2 {
@@ -143,6 +204,10 @@ h1 {
 }
 
 .footer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.35rem 0.8rem;
   padding: 1rem 1.5rem 1.4rem;
   color: #6b7890;
   font-size: 0.85rem;
@@ -153,7 +218,11 @@ h1 {
   margin: 0;
 }
 
-@media (max-width: 640px) {
+.muted {
+  color: #8a95a8;
+}
+
+@media (max-width: 720px) {
   .nav {
     display: none;
   }
