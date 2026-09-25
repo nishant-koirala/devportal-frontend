@@ -1,0 +1,7 @@
+<div class="bookmark-row" [class.removed]="state === 'Removed'">
+  <div class="content">
+    <div class="title">{{ title }}</div>
+    <div class="type">{{ typeText }}</div>
+  </div>
+  <button class="remove-btn">{{ state === 'Removed' ? 'Undo' : 'Remove' }}</button>
+</div>

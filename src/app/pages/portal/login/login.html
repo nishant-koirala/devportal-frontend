@@ -1,0 +1,136 @@
+<div class="admin-login-page">
+  <div class="header-bar">
+    <div class="logo">
+      <svg width="80" height="24" viewBox="0 0 80 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10 4C10 4 15.5 4 20 8.5C24.5 13 24.5 20 24.5 20H15.5C15.5 20 15.5 16 12.5 13C9.5 10 5.5 10 5.5 10V20H0V4H10Z" fill="var(--color-primary)"/>
+        <text x="32" y="18" fill="black" font-weight="bold" font-size="16">fonepay</text>
+      </svg>
+    </div>
+  </div>
+
+  <div class="content-wrapper">
+    
+    @switch (step) {
+      
+      @case ('LOGIN') {
+        <div class="form-card">
+          <div class="head">
+            <h1 class="title">Log in to the management portal</h1>
+            <p class="subtitle">Use your Fonepay staff email address.</p>
+          </div>
+
+          <form class="login-form" (ngSubmit)="onSubmitLogin()">
+            @if (loginError) {
+              <div class="error-banner">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M8 0C3.58 0 0 3.58 0 8C0 12.42 3.58 16 8 16C12.42 16 16 12.42 16 8C16 3.58 12.42 0 8 0ZM8.8 12H7.2V10.4H8.8V12ZM8.8 8.8H7.2V4H8.8V8.8Z" fill="#CE2027"/>
+                </svg>
+                <span>The email or password is incorrect.</span>
+              </div>
+            }
+
+            <div class="input-group">
+              <label class="input-label">Email address</label>
+              <input type="email" class="input-field" [class.error]="loginError" [(ngModel)]="email" name="email" placeholder="you@company.com" />
+            </div>
+
+            <div class="input-group">
+              <label class="input-label">Password</label>
+              <input type="password" class="input-field" [class.error]="loginError" [(ngModel)]="password" name="password" placeholder="••••••••" />
+              <a href="#" class="forgot-link">Forgot password?</a>
+            </div>
+
+            <div class="actions-group">
+              <button type="submit" class="btn-primary" [disabled]="isLoggingIn">
+                {{ isLoggingIn ? 'Logging in...' : 'Log in' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      }
+
+      @case ('2FA_CODE') {
+        <div class="form-card">
+          <div class="head">
+            <h1 class="title">Enter your authentication code</h1>
+            <p class="subtitle">Open your authenticator app and enter the 6-digit code.</p>
+          </div>
+
+          <form class="login-form" (ngSubmit)="onSubmitCode()">
+            @if (codeError) {
+              <div class="error-banner">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M8 0C3.58 0 0 3.58 0 8C0 12.42 3.58 16 8 16C12.42 16 16 12.42 16 8C16 3.58 12.42 0 8 0ZM8.8 12H7.2V10.4H8.8V12ZM8.8 8.8H7.2V4H8.8V8.8Z" fill="#CE2027"/>
+                </svg>
+                <span>The authentication code is incorrect.</span>
+              </div>
+            }
+
+            <div class="input-group">
+              <div class="otp-inputs">
+                <input type="text" class="otp-field" [class.error]="codeError" maxlength="1" [(ngModel)]="otp1" name="otp1" (keyup)="onOtpInput($event, 1)" />
+                <input type="text" class="otp-field" [class.error]="codeError" maxlength="1" [(ngModel)]="otp2" name="otp2" (keyup)="onOtpInput($event, 2)" />
+                <input type="text" class="otp-field" [class.error]="codeError" maxlength="1" [(ngModel)]="otp3" name="otp3" (keyup)="onOtpInput($event, 3)" />
+                <input type="text" class="otp-field" [class.error]="codeError" maxlength="1" [(ngModel)]="otp4" name="otp4" (keyup)="onOtpInput($event, 4)" />
+                <input type="text" class="otp-field" [class.error]="codeError" maxlength="1" [(ngModel)]="otp5" name="otp5" (keyup)="onOtpInput($event, 5)" />
+                <input type="text" class="otp-field" [class.error]="codeError" maxlength="1" [(ngModel)]="otp6" name="otp6" (keyup)="onOtpInput($event, 6)" />
+              </div>
+              <a href="#" class="forgot-link" (click)="continueToBackupCodes()">Use a backup code instead</a>
+            </div>
+
+            <div class="actions-group">
+              <button type="submit" class="btn-primary" [disabled]="isVerifying">
+                {{ isVerifying ? 'Verifying...' : 'Verify' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      }
+
+      @case ('ENROLL_APP') {
+        <div class="form-card">
+          <div class="head">
+            <h1 class="title">Enrol your authenticator app</h1>
+            <p class="subtitle">Scan this QR code with your authenticator app to set up 2FA.</p>
+          </div>
+          
+          <div class="qr-container">
+            <img src="https://placehold.co/200x200/e0dcdc/292424?text=QR+Code" alt="QR Code" class="qr-code" />
+            <p class="setup-key">Or enter code manually: <strong>XKS2 9JDJ 291K LSK2</strong></p>
+          </div>
+
+          <div class="actions-group">
+            <button type="button" class="btn-primary" (click)="continueToBackupCodes()">Continue</button>
+          </div>
+        </div>
+      }
+
+      @case ('BACKUP_CODES') {
+        <div class="form-card">
+          <div class="head">
+            <h1 class="title">Save your backup codes</h1>
+            <p class="subtitle">Keep these safe. You'll need them if you lose access to your authenticator app.</p>
+          </div>
+          
+          <div class="backup-codes-grid">
+            <div class="code-item">8392-1923</div>
+            <div class="code-item">1923-4921</div>
+            <div class="code-item">9321-3921</div>
+            <div class="code-item">4821-2913</div>
+            <div class="code-item">8213-4821</div>
+            <div class="code-item">9213-4812</div>
+          </div>
+
+          <div class="actions-group">
+            <button type="button" class="btn-secondary">Copy codes</button>
+            <button type="button" class="btn-primary" (click)="finishEnrollment()">I've saved these codes</button>
+          </div>
+        </div>
+      }
+    }
+
+    <div class="footer">
+      <p>Fonepay Payment Service Ltd. Licensed Payment System Operator</p>
+    </div>
+  </div>
+</div>

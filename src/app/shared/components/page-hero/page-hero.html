@@ -1,0 +1,21 @@
+<section class="page-hero">
+  <div class="inner">
+    @if (breadcrumb) {
+      <div class="breadcrumb">{{ breadcrumb }}</div>
+    }
+    <h1 class="title">{{ title }}</h1>
+    @if (description) {
+      <p class="description">{{ description }}</p>
+    }
+    @if (primaryActionLabel || secondaryActionLabel) {
+      <div class="actions">
+        @if (primaryActionLabel) {
+          <button class="btn-primary">{{ primaryActionLabel }}</button>
+        }
+        @if (secondaryActionLabel) {
+          <button class="btn-secondary">{{ secondaryActionLabel }}</button>
+        }
+      </div>
+    }
+  </div>
+</section>

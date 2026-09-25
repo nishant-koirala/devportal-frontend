@@ -1,0 +1,38 @@
+.page-head {
+  background-color: var(--color-background);
+  padding: 80px 40px;
+  border-bottom: 1px solid var(--color-border);
+}
+.inner {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.title {
+  font-size: 34px;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  margin: 0 0 16px 0;
+}
+.description {
+  font-size: 16px;
+  color: var(--color-text-grey);
+  margin: 0;
+}
+.page-content {
+  display: flex;
+  flex-direction: column;
+  gap: 120px;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 80px 24px;
+}
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 24px;
+}

@@ -1,0 +1,26 @@
+<nav class="navbar">
+  <div class="navbar-container">
+    <div class="logo">
+      <!-- Fonepay Logo SVG approximation based on the brand color -->
+      <svg width="80" height="24" viewBox="0 0 80 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10 4C10 4 15.5 4 20 8.5C24.5 13 24.5 20 24.5 20H15.5C15.5 20 15.5 16 12.5 13C9.5 10 5.5 10 5.5 10V20H0V4H10Z" fill="var(--color-primary)"/>
+        <text x="32" y="18" fill="black" font-weight="bold" font-size="16">fonepay</text>
+      </svg>
+    </div>
+    
+    <div class="nav-links">
+      <a href="/docs" class="nav-link active">Docs</a>
+      <a href="/products" class="nav-link">Products</a>
+    </div>
+
+    <div class="nav-actions">
+      @if (isAuthenticated) {
+        <!-- Profile/User Icon -->
+        <div class="avatar"></div>
+      } @else {
+        <button class="nav-btn-link">Sign In</button>
+        <button class="nav-btn-primary">Create Account</button>
+      }
+    </div>
+  </div>
+</nav>

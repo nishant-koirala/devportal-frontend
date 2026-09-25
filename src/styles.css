@@ -1,1 +1,61 @@
-/* You can add global styles to this file, and also import other style files */
+/* Global Styles */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
+:root {
+  /* Exact Colors from Figma */
+  --color-primary: #ce2027; /* rgba(206, 32, 39, 1) */
+  --color-primary-text: #faf0f0; 
+  
+  --color-text-dark: #1a1415;
+  --color-text-main: #292424; 
+  --color-text-grey: #514949; /* rgba(81, 73, 73, 1) */
+  --color-text-placeholder: #8e8686; /* rgba(142, 134, 134, 1) */
+  --color-text-muted: #706767;
+  
+  --color-background: #f9f9f9; 
+  --color-bg-card: #ffffff;
+  --color-border: #e0dcdc; 
+  
+  /* Typography from Figma */
+  --font-family-main: 'Poppins', sans-serif;
+  
+  --text-h1-size: 34px;
+  --text-h1-weight: 600;
+  --text-h1-line-height: 40px;
+  --text-h1-letter-spacing: -0.3px;
+  
+  --text-label-size: 14px;
+  --text-label-weight: 500;
+  --text-label-line-height: 24px;
+  --text-label-letter-spacing: 0.2px;
+
+  --text-body-size: 14px;
+  --text-body-weight: 400;
+  --text-body-line-height: 24px;
+  
+  --text-helper-size: 12px;
+  --text-helper-weight: 400;
+  --text-helper-line-height: 16px;
+  
+  --text-button-size: 16px;
+  --text-button-weight: 500;
+  --text-button-line-height: 24px;
+  --text-button-letter-spacing: 0.2px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-family-main);
+  background-color: var(--color-background);
+  color: var(--color-text-dark);
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}

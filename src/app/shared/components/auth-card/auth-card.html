@@ -1,0 +1,11 @@
+<div class="auth-page-container">
+  <div class="auth-card">
+    <div class="head">
+      <h1 class="title">{{ title }}</h1>
+      <p class="subtitle" *ngIf="subtitle">{{ subtitle }}</p>
+    </div>
+    <div class="body">
+      <ng-content></ng-content>
+    </div>
+  </div>
+</div>

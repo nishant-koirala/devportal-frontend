@@ -1,0 +1,26 @@
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  width: 280px;
+  background-color: rgba(255, 255, 255, 1);
+  border-right: 1px solid rgba(204, 196, 196, 1);
+  padding: 16px;
+  gap: 4px;
+  height: 100vh;
+}
+.sidebar-item {
+  padding: 10px 12px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-dark);
+  text-decoration: none;
+  border-radius: 8px;
+  transition: background-color 0.2s, color 0.2s;
+}
+.sidebar-item:hover {
+  background-color: #f2f2f2;
+}
+.sidebar-item.active {
+  background-color: #fce8e9;
+  color: var(--color-primary);
+}

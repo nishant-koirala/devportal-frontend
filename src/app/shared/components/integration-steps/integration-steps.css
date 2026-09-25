@@ -1,0 +1,16 @@
+.integration-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 64px;
+  width: 100%;
+}
+.steps-section {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+.step-flow {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+}

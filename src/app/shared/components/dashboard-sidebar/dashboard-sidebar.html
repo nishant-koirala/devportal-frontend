@@ -1,0 +1,11 @@
+<aside class="sidebar">
+  @for (item of items; track item.label) {
+    <a 
+      [href]="item.url" 
+      class="sidebar-item" 
+      [class.active]="item.label === activeItem"
+    >
+      {{ item.label }}
+    </a>
+  }
+</aside>

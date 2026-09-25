@@ -1,0 +1,16 @@
+<div class="input-container" [class.disabled]="disabled">
+  @if (label) {
+    <label class="input-label">{{ label }}</label>
+  }
+  <input 
+    class="input-field" 
+    [type]="type" 
+    [placeholder]="placeholder" 
+    [disabled]="disabled"
+    [value]="value"
+    (input)="onInput($event)"
+  />
+  @if (hint) {
+    <span class="input-hint">{{ hint }}</span>
+  }
+</div>

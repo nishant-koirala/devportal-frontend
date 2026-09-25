@@ -1,0 +1,17 @@
+.param-row {
+  display: flex;
+  padding: 10px 0;
+  gap: 16px;
+  border-bottom: 1px solid rgba(204, 196, 196, 0.5);
+}
+.col {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-text-dark);
+}
+.param { flex: 2; }
+.param code { font-size: 13px; background: #f9f9f9; padding: 2px 4px; border-radius: 4px; color: var(--color-primary); }
+.type { flex: 1; color: var(--color-text-grey); font-family: monospace; font-size: 13px;}
+.req { flex: 1; color: var(--color-text-grey); }
+.req.is-req { font-weight: 500; color: var(--color-text-dark); }
+.desc { flex: 4; line-height: 1.5;}

@@ -1,0 +1,38 @@
+<app-auth-card
+  title="Log in to your account"
+  subtitle="Welcome back! Please enter your details."
+>
+  <form class="auth-form" (ngSubmit)="login()">
+    <app-input
+      label="Email address"
+      placeholder="Enter your email"
+      type="email"
+      [(value)]="email"
+    ></app-input>
+
+    <div class="password-group">
+      <app-input
+        label="Password"
+        placeholder="Enter your password"
+        type="password"
+        [(value)]="password"
+      ></app-input>
+      <a href="/forgot-password" class="forgot-link">Forgot password?</a>
+    </div>
+
+    @if (error) {
+      <div style="color: #ef4444; font-size: 0.875rem; margin-top: -0.5rem; margin-bottom: 1rem;">
+        {{ error }}
+      </div>
+    }
+
+    <div class="actions">
+      <button class="btn-primary" type="submit" [disabled]="isLoading">
+        {{ isLoading ? 'Logging in...' : 'Log in' }}
+      </button>
+      <p class="footnote">
+        Don't have an account? <a href="/register">Sign up</a>
+      </p>
+    </div>
+  </form>
+</app-auth-card>

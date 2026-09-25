@@ -1,0 +1,10 @@
+<div class="product-card">
+  @if (badgeText) {
+    <div class="badge">{{ badgeText }}</div>
+  }
+  <div class="content">
+    <h3 class="title">{{ title }}</h3>
+    <p class="description">{{ description }}</p>
+  </div>
+  <app-button variant="primary">{{ buttonText }}</app-button>
+</div>

@@ -1,0 +1,15 @@
+<div class="code-panel">
+  <div class="header">
+    <div class="tabs">
+      @for (tab of tabs; track tab) {
+        <button class="tab" [class.active]="tab === activeTab" (click)="setTab(tab)">{{ tab }}</button>
+      }
+    </div>
+    <button class="copy-btn" (click)="copyCode()" title="Copy to clipboard">
+      <span>Copy</span>
+    </button>
+  </div>
+  <div class="body">
+    <pre class="code">{{ code }}</pre>
+  </div>
+</div>

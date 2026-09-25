@@ -1,0 +1,19 @@
+<app-auth-card
+  title="Check your email"
+  subtitle="We sent a verification link to you@company.com"
+>
+  <div class="verify-content">
+    <div class="icon-circle">
+      ✉️
+    </div>
+
+    <div class="actions">
+      <button class="btn-primary" type="button" onclick="window.location.href='/onboarding'">Open email app</button>
+      <p class="footnote">
+        Didn't receive the email? <a href="javascript:void(0)">Click to resend</a>
+      </p>
+    </div>
+    
+    <a href="/login" class="back-link">Back to log in</a>
+  </div>
+</app-auth-card>

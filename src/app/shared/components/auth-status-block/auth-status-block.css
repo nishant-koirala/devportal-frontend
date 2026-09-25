@@ -1,0 +1,50 @@
+.auth-block {
+  display: flex;
+  flex-direction: column;
+  padding: 40px;
+  gap: 32px;
+  align-items: center;
+  text-align: center;
+}
+
+.icon-badge {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+}
+
+.icon-badge.pending {
+  background-color: #fff8e1;
+}
+.icon-badge.success {
+  background-color: #e8f5e9;
+}
+.icon-badge.expired {
+  background-color: #fce8e9;
+}
+
+.copy {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  margin: 0;
+}
+
+.description {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-text-grey);
+  line-height: 1.6;
+  margin: 0;
+  max-width: 400px;
+}

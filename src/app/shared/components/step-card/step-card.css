@@ -1,0 +1,32 @@
+.step-card {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  gap: 4px;
+  background-color: transparent;
+  border: 1px solid rgba(204, 196, 196, 1);
+  border-radius: 8px; 
+}
+
+.step-text {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-primary);
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  margin: 0;
+}
+
+.description {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-text-grey);
+  line-height: 1.5;
+  margin: 0;
+}

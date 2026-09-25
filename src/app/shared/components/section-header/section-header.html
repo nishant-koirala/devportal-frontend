@@ -1,0 +1,11 @@
+<div class="section-header">
+  <div class="copy">
+    <h2 class="title">{{ title }}</h2>
+    @if (description) {
+      <p class="description">{{ description }}</p>
+    }
+  </div>
+  @if (actionLabel) {
+    <app-button variant="outline">{{ actionLabel }}</app-button>
+  }
+</div>

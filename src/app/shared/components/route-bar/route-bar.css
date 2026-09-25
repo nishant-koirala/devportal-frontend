@@ -1,0 +1,34 @@
+.route-bar {
+  display: flex;
+  align-items: center;
+  padding: 12px;
+  gap: 8px;
+  background-color: rgba(255, 255, 255, 1);
+  border: 1px solid rgba(204, 196, 196, 1);
+  border-radius: 8px;
+  font-family: monospace;
+}
+.method {
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 8px;
+  border-radius: 4px;
+  color: white;
+}
+.method.get { background-color: #0b8043; }
+.method.post { background-color: #fbbc04; color: #333; }
+.method.put { background-color: #f09300; }
+.method.delete { background-color: #ce2027; }
+.method.patch { background-color: #9c27b0; }
+
+.url {
+  display: flex;
+  font-size: 13px;
+}
+.base {
+  color: var(--color-text-grey);
+}
+.path {
+  font-weight: 500;
+  color: var(--color-text-dark);
+}

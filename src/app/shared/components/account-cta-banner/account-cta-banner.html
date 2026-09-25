@@ -1,0 +1,17 @@
+<div class="cta-banner">
+  <div class="pitch">
+    <div class="copy">
+      <h2 class="title">{{ title }}</h2>
+      <p class="description">{{ description }}</p>
+    </div>
+    <button class="cta-btn">{{ actionLabel }}</button>
+  </div>
+  <div class="perks">
+    @for (perk of perks; track perk) {
+      <div class="perk-item">
+        <span class="check">✓</span>
+        <span class="perk-text">{{ perk }}</span>
+      </div>
+    }
+  </div>
+</div>

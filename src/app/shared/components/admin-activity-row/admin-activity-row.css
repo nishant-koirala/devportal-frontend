@@ -1,0 +1,19 @@
+.activity-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(230, 230, 230, 0.6);
+}
+.text {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-text-dark);
+}
+.time {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--color-text-grey);
+  white-space: nowrap;
+  margin-left: 24px;
+}

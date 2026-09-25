@@ -1,0 +1,40 @@
+.product-card {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  gap: 16px;
+  background-color: rgba(255, 255, 255, 1);
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  align-items: flex-start;
+}
+
+.badge {
+  background-color: #fce8e9;
+  color: var(--color-primary);
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  margin: 0;
+}
+
+.description {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-text-grey);
+  line-height: 1.5;
+  margin: 0;
+}

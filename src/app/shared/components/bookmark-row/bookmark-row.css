@@ -1,0 +1,33 @@
+.bookmark-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background-color: white;
+  border-bottom: 1px solid rgba(230, 230, 230, 1);
+}
+.bookmark-row.removed {
+  opacity: 0.5;
+}
+.content {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+.title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-dark);
+}
+.type {
+  font-size: 14px;
+  color: var(--color-text-grey);
+}
+.remove-btn {
+  background: none;
+  border: none;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-primary);
+  cursor: pointer;
+}

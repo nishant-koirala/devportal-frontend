@@ -1,0 +1,18 @@
+<div class="integration-steps">
+  <div class="steps-section">
+    <app-section-header
+      [title]="sectionTitle"
+      description="Each step is quick. Most developers are up and running in under an hour."
+    ></app-section-header>
+    <div class="step-flow">
+      @for (step of steps; track step.step) {
+        <app-step-card
+          [stepNumber]="step.step"
+          [title]="step.title"
+          [description]="step.description"
+        ></app-step-card>
+      }
+    </div>
+  </div>
+  <app-account-cta-banner></app-account-cta-banner>
+</div>

@@ -1,0 +1,65 @@
+.cta-banner {
+  display: flex;
+  padding: 80px 40px;
+  gap: 64px;
+  background-color: rgba(245, 210, 212, 1);
+  border-radius: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.pitch {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  flex: 1;
+}
+.copy {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.title {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  margin: 0;
+}
+.description {
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--color-text-grey);
+  margin: 0;
+  line-height: 1.5;
+}
+.cta-btn {
+  padding: 12px 24px;
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: background-color 0.2s;
+}
+.cta-btn:hover { background-color: #a6181e; }
+.perks {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.perk-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.check {
+  color: var(--color-primary);
+  font-weight: 700;
+}
+.perk-text {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-text-dark);
+}

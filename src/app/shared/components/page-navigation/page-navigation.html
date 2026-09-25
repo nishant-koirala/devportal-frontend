@@ -1,0 +1,19 @@
+<div class="page-navigation">
+  @if (prevTitle) {
+    <a [href]="prevUrl" class="nav-card prev">
+      <span class="label">Previous</span>
+      <span class="title">← {{ prevTitle }}</span>
+    </a>
+  } @else {
+    <div class="nav-card empty"></div>
+  }
+
+  @if (nextTitle) {
+    <a [href]="nextUrl" class="nav-card next">
+      <span class="label">Next</span>
+      <span class="title">{{ nextTitle }} →</span>
+    </a>
+  } @else {
+    <div class="nav-card empty"></div>
+  }
+</div>

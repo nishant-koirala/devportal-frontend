@@ -1,0 +1,15 @@
+.page-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 80px 24px;
+}
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+}
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 24px;
+}

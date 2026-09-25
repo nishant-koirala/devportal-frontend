@@ -1,0 +1,10 @@
+<div class="bookmark-card" [class.removed]="state === 'Removed'">
+  <div class="content">
+    <h3 class="title">{{ title }}</h3>
+    <p class="desc">{{ description }}</p>
+  </div>
+  <div class="actions">
+    <button class="action-btn view-btn">View</button>
+    <button class="action-btn remove-btn">{{ state === 'Removed' ? 'Undo' : 'Remove' }}</button>
+  </div>
+</div>

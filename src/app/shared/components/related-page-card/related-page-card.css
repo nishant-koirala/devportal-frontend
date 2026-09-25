@@ -1,0 +1,27 @@
+.related-card {
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  gap: 16px;
+  background-color: rgba(255, 255, 255, 1);
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.related-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-dark);
+  margin: 0;
+}
+.path {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-text-grey);
+  margin: 0;
+}
