@@ -1,0 +1,129 @@
+<div class="main-content" (click)="closeMenu()">
+  <div class="header">
+    <h1 class="title">Assets</h1>
+    <button class="btn btn-primary" (click)="openNewAssetModal()">
+      <span>New asset</span>
+    </button>
+  </div>
+
+  <ng-container *ngIf="hasAssets; else emptyState">
+    <div class="table-container">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Platform</th>
+            <th>Kind</th>
+            <th class="action-th"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let asset of assets">
+            <td class="name-cell">{{ asset.name }}</td>
+            <td>{{ asset.platform }}</td>
+            <td>{{ asset.kind }}</td>
+            <td class="action-cell">
+              <button class="icon-btn" (click)="toggleMenu(asset.id, $event)">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="12" cy="6" r="1.5" fill="#1A1415"/>
+                  <circle cx="12" cy="12" r="1.5" fill="#1A1415"/>
+                  <circle cx="12" cy="18" r="1.5" fill="#1A1415"/>
+                </svg>
+              </button>
+              <div class="dropdown-menu" *ngIf="activeMenuId === asset.id" (click)="$event.stopPropagation()">
+                <div class="dropdown-item" (click)="openEditAssetModal(asset)">Edit asset</div>
+                <div class="dropdown-item text-danger" (click)="openDeleteModal(asset)">Delete</div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <div class="pagination">
+      <div class="pagination-info">Showing 1–{{ assets.length }} of {{ assets.length }}</div>
+      <div class="pagination-controls">
+        <button class="page-btn text-btn disabled">Previous</button>
+        <button class="page-btn active">1</button>
+        <button class="page-btn text-btn disabled">Next</button>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-template #emptyState>
+    <div class="empty-state">
+      <div class="empty-title">No assets configured</div>
+      <p class="empty-desc">Add the Fonepay Payment App build or an SDK so developers have something to request.</p>
+    </div>
+  </ng-template>
+
+  <!-- New/Edit Asset Modal -->
+  <div class="modal-overlay" *ngIf="isAssetModalOpen" (click)="closeAssetModal()">
+    <div class="modal-content asset-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2 class="modal-title">{{ modalMode === 'new' ? 'New asset' : 'Edit asset' }}</h2>
+      </div>
+      
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Name</label>
+          <input type="text" class="form-control" [(ngModel)]="newAssetName" placeholder="e.g. Fonepay App (iOS)">
+        </div>
+        <div class="form-row">
+          <div class="form-group flex-1">
+            <label class="form-label">Platform</label>
+            <div class="dropdown-select-wrapper w-full">
+              <select [(ngModel)]="newAssetPlatform" class="w-full">
+                <option value="iOS">iOS</option>
+                <option value="Android">Android</option>
+                <option value="Web">Web</option>
+              </select>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M7 10L12 15L17 10" stroke="#1A1415" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+          <div class="form-group flex-1">
+            <label class="form-label">Kind</label>
+            <div class="dropdown-select-wrapper w-full">
+              <select [(ngModel)]="newAssetKind" class="w-full">
+                <option value="App">App</option>
+                <option value="SDK">SDK</option>
+              </select>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M7 10L12 15L17 10" stroke="#1A1415" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <textarea class="form-control" [(ngModel)]="newAssetDescription" placeholder="What this asset is and who can request it" rows="4"></textarea>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeAssetModal()">Cancel</button>
+        <button class="btn btn-primary" (click)="saveAsset()">{{ modalMode === 'new' ? 'Create asset' : 'Save asset' }}</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Modal -->
+  <div class="modal-overlay" *ngIf="isDeleteModalOpen" (click)="closeDeleteModal()">
+    <div class="modal-content delete-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2 class="modal-title">Delete {{ assetToDelete?.name }}?</h2>
+      </div>
+      <div class="modal-body">
+        <p class="modal-helper-text">
+          Any pending or granted access request for this asset stays on record, but developers can no longer request it. This cannot be undone.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeDeleteModal()">Cancel</button>
+        <button class="btn btn-danger" (click)="confirmDelete()">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
