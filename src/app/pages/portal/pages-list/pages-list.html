@@ -1,0 +1,252 @@
+<div class="page-container">
+    <div class="pe-header">
+      <h1 class="pe-title">Pages</h1>
+    </div>
+    
+    <div class="pe-filters">
+      <div class="pe-search-box">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#706768" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="7.333" cy="7.333" r="5.333"/>
+          <path d="M11.1 11.1L14 14"/>
+        </svg>
+        <input type="text" class="pe-search-input" placeholder="Search" [(ngModel)]="searchQuery">
+      </div>
+      
+      <div class="pe-dropdowns">
+        <select class="pe-select" [(ngModel)]="productFilter">
+          <option>All products</option>
+          <option>Autopay by Fonepay</option>
+        </select>
+        <select class="pe-select" [(ngModel)]="statusFilter">
+          <option>All statuses</option>
+          <option>Published</option>
+          <option>In review</option>
+          <option>Draft</option>
+          <option>Needs changes</option>
+          <option>Unpublished</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="pe-table-container">
+      <table class="pe-table" *ngIf="filteredPages.length > 0">
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Location</th>
+            <th>Status</th>
+            <th>Last edited</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let page of filteredPages" class="pe-table-row">
+            <td class="pe-col-name">{{ page.title }}</td>
+            <td class="pe-col-slug">{{ page.location }}</td>
+            <td class="pe-col-status">
+              <span class="pe-status-pill"
+                    [class.pe-status-pill-green]="page.status === 'Published'"
+                    [class.pe-status-pill-orange]="page.status.includes('Pending review') || page.status.includes('Draft changes') || page.status === 'Needs changes' || page.status === 'In review'">
+                {{ page.status }}
+              </span>
+            </td>
+            <td class="pe-col-updated">{{ page.lastEdited }}</td>
+            <td class="pe-col-action" style="position: relative;">
+              <button class="pe-btn-icon" (click)="toggleDropdown(page.id, $event)">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="12" cy="5" r="2" fill="#52494A"/>
+                  <circle cx="12" cy="12" r="2" fill="#52494A"/>
+                  <circle cx="12" cy="19" r="2" fill="#52494A"/>
+                </svg>
+              </button>
+              
+              <!-- Dropdown Menu -->
+              <div *ngIf="activeDropdownId === page.id" 
+                   style="position: absolute; right: 24px; top: 40px; background: white; border: 1px solid #e3dbdc; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); z-index: 10; min-width: 160px; padding: 4px 0;">
+                <button style="display: block; width: 100%; text-align: left; padding: 8px 16px; border: none; background: transparent; font-family: 'Poppins', sans-serif; font-size: 14px; color: #1a1415; cursor: pointer;" (click)="openPageSettings(page.id); $event.stopPropagation()">Page settings</button>
+                <button style="display: block; width: 100%; text-align: left; padding: 8px 16px; border: none; background: transparent; font-family: 'Poppins', sans-serif; font-size: 14px; color: #1a1415; cursor: pointer;" (click)="openRevisionHistory($event)">Revision history</button>
+                <button style="display: block; width: 100%; text-align: left; padding: 8px 16px; border: none; background: transparent; font-family: 'Poppins', sans-serif; font-size: 14px; color: #1a1415; cursor: pointer;" *ngIf="page.status === 'Published' || page.status.includes('Pending review') || page.status.includes('Draft changes')">View on portal</button>
+                <button style="display: block; width: 100%; text-align: left; padding: 8px 16px; border: none; background: transparent; font-family: 'Poppins', sans-serif; font-size: 14px; color: #1a1415; cursor: pointer;" *ngIf="page.status === 'Needs changes' || page.status === 'Draft' || page.status === 'Unpublished' || page.status.includes('Pending review')">Preview</button>
+                <button style="display: block; width: 100%; text-align: left; padding: 8px 16px; border: none; background: transparent; font-family: 'Poppins', sans-serif; font-size: 14px; color: #1a1415; cursor: pointer;" *ngIf="page.status === 'Needs changes' || page.status === 'Draft' || page.status === 'Unpublished'">Republish</button>
+                <button style="display: block; width: 100%; text-align: left; padding: 8px 16px; border: none; background: transparent; font-family: 'Poppins', sans-serif; font-size: 14px; color: #1a1415; cursor: pointer;" *ngIf="page.status === 'Published' || page.status.includes('Pending review') || page.status.includes('Draft changes')" (click)="openUnpublishModal(page.id); $event.stopPropagation()">Unpublish</button>
+                <div style="height: 1px; background: #e3dbdc; margin: 4px 0;"></div>
+                <button style="display: block; width: 100%; text-align: left; padding: 8px 16px; border: none; background: transparent; font-family: 'Poppins', sans-serif; font-size: 14px; color: #ce2027; cursor: pointer;">Delete page</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <!-- Empty state -->
+      <div *ngIf="filteredPages.length === 0" class="pe-empty-state" style="text-align: center; padding: 64px 24px;">
+        <div style="width: 48px; height: 48px; border-radius: 24px; background: #ebe1e2; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#52494a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+        </div>
+        <h3 style="font-size: 20px; font-weight: 600; color: #1a1415; margin: 0 0 8px 0; font-family: 'Poppins', sans-serif;">No pages found</h3>
+        <p style="font-size: 14px; color: #52494a; margin: 0 0 24px 0; font-family: 'Poppins', sans-serif;">Try a different search term, or clear the product and status filters.</p>
+        <button style="border: none; background: transparent; display: flex; align-items: center; justify-content: center; gap: 8px; margin: 0 auto; font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 500; color: #ce2027; cursor: pointer;" (click)="clearSearch()">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="4" x2="4" y2="12"></line>
+            <line x1="4" y1="4" x2="12" y2="12"></line>
+          </svg>
+          Clear Search
+        </button>
+      </div>
+
+      <!-- Pagination Footer -->
+      <div *ngIf="filteredPages.length > 0" class="pe-table-footer" style="display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; border-top: 1px solid #ccc4c4;">
+        <div style="font-size: 14px; color: #52494a;">Showing 1–{{ filteredPages.length }} of {{ pages.length }}</div>
+        <div style="display: flex; gap: 8px;">
+          <button class="pe-btn-icon" style="border: 1px solid #ccc4c4; border-radius: 8px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: white; cursor: not-allowed; opacity: 0.5;">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#1a1415" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M10 12L6 8L10 4"/>
+            </svg>
+          </button>
+          <button class="pe-btn-icon" style="border: 1px solid #ccc4c4; border-radius: 8px; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; background: white; cursor: not-allowed; opacity: 0.5;">
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#1a1415" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M6 12L10 8L6 4"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+</div>
+
+<!-- Revision History Drawer -->
+<div *ngIf="isRevisionHistoryOpen" style="position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 40;" (click)="closeRevisionHistory()"></div>
+<div *ngIf="isRevisionHistoryOpen" style="position: fixed; right: 0; top: 0; bottom: 0; width: 560px; background: white; z-index: 50; box-shadow: -4px 0 24px rgba(0,0,0,0.08); display: flex; flex-direction: column;">
+  <div style="padding: 24px; border-bottom: 1px solid #e3dbdc; display: flex; justify-content: space-between; align-items: center;">
+    <h2 style="margin: 0; font-family: 'Poppins', sans-serif; font-size: 20px; font-weight: 600; color: #1a1415;">Revisions</h2>
+    <button class="pe-btn-icon" (click)="closeRevisionHistory()" style="border: none; background: transparent; cursor: pointer; padding: 0;">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a1415" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+  </div>
+  <div style="padding: 24px 40px; overflow-y: auto; flex: 1; position: relative;">
+    
+    <!-- Revision Row 1 -->
+    <div style="position: relative; z-index: 2; padding: 12px 0; border-bottom: 1px solid #ccc4c4; display: flex; align-items: center; justify-content: space-between;">
+      <div style="display: flex; gap: 16px; align-items: flex-start;">
+        <div>
+          <div style="font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 500; color: #1a1415; margin-bottom: 4px;">Priya Shrestha, 2 hours ago (current draft)</div>
+          <div style="font-family: 'Poppins', sans-serif; font-size: 14px; color: #52494a;">Clarified the polling behaviour after Consent Request</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Revision Row 2 -->
+    <div style="position: relative; z-index: 2; padding: 12px 0; border-bottom: 1px solid #ccc4c4; display: flex; align-items: center; justify-content: space-between;">
+      <div style="display: flex; gap: 16px; align-items: flex-start;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+            <div style="font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 500; color: #1a1415;">Bibek Rana, Approved 5 days ago</div>
+            <div style="display: inline-block; padding: 2px 12px; border-radius: 12px; background: #cfe7dd; color: #085133; font-family: 'Poppins', sans-serif; font-size: 12px; font-weight: 500;">Published</div>
+          </div>
+          <div style="font-family: 'Poppins', sans-serif; font-size: 14px; color: #52494a;">Approved: matches the version on the portal</div>
+        </div>
+      </div>
+      <button style="border: 1px solid #ce2027; background: white; padding: 8px 16px; border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 500; color: #ce2027; cursor: pointer;">Restore</button>
+    </div>
+    
+    <!-- Revision Row 3 -->
+    <div style="position: relative; z-index: 2; padding: 12px 0; border-bottom: 1px solid #ccc4c4; display: flex; align-items: center; justify-content: space-between;">
+      <div style="display: flex; gap: 16px; align-items: flex-start;">
+        <div>
+          <div style="font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 500; color: #1a1415; margin-bottom: 4px;">Priya Shrestha, 1 week ago</div>
+          <div style="font-family: 'Poppins', sans-serif; font-size: 14px; color: #52494a;">Added the security model section</div>
+        </div>
+      </div>
+      <button style="border: 1px solid #ce2027; background: white; padding: 8px 16px; border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 500; color: #ce2027; cursor: pointer;">Restore</button>
+    </div>
+    
+    <!-- Revision Row 4 -->
+    <div style="position: relative; z-index: 2; padding: 12px 0; display: flex; align-items: center; justify-content: space-between;">
+      <div style="display: flex; gap: 16px; align-items: flex-start;">
+        <div>
+          <div style="font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 500; color: #1a1415; margin-bottom: 4px;">Priya Shrestha, 2 weeks ago</div>
+          <div style="font-family: 'Poppins', sans-serif; font-size: 14px; color: #52494a;">Initial draft</div>
+        </div>
+      </div>
+      <button style="border: 1px solid #ce2027; background: white; padding: 8px 16px; border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 500; color: #ce2027; cursor: pointer;">Restore</button>
+    </div>
+  </div>
+</div>
+
+<!-- Unpublish Confirmation Modal -->
+<div *ngIf="isUnpublishModalOpen" style="position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 60; display: flex; align-items: center; justify-content: center;" (click)="closeUnpublishModal()">
+  <div style="background: white; border-radius: 12px; width: 560px; box-shadow: 0 4px 24px rgba(0,0,0,0.12);" (click)="$event.stopPropagation()">
+    <div style="padding: 24px; display: flex; gap: 16px;">
+      <div style="width: 48px; height: 48px; border-radius: 24px; background: #fdf2f2; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ce2027" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <line x1="12" y1="8" x2="12" y2="12"></line>
+          <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+      </div>
+      <div>
+        <h3 style="margin: 0 0 8px 0; font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 600; color: #1a1415;">Unpublish page?</h3>
+        <p style="margin: 0; font-family: 'Poppins', sans-serif; font-size: 14px; color: #52494a; line-height: 20px;">
+          The page leaves the portal and search immediately; its address returns not found until you republish it. Developers who bookmarked it keep the bookmark, and it reopens the page once it is live again. Its revision history is kept.
+        </p>
+      </div>
+    </div>
+    <div style="padding: 16px 24px; border-top: 1px solid #e3dbdc; display: flex; justify-content: flex-end; gap: 12px;">
+      <button style="padding: 8px 16px; border: 1px solid #ccc4c4; background: white; border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 500; color: #52494a; cursor: pointer;" (click)="closeUnpublishModal()">Cancel</button>
+      <button style="padding: 8px 16px; border: none; background: #ce2027; border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 500; color: white; cursor: pointer;" (click)="confirmUnpublish()">Unpublish</button>
+    </div>
+  </div>
+</div>
+
+<!-- Page Settings Drawer -->
+<div *ngIf="isPageSettingsOpen" style="position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 60;" (click)="closePageSettings()"></div>
+<div *ngIf="isPageSettingsOpen" style="position: fixed; right: 0; top: 0; bottom: 0; width: 560px; background: white; z-index: 70; box-shadow: -4px 0 24px rgba(0,0,0,0.08); display: flex; flex-direction: column;">
+  <div style="padding: 24px; border-bottom: 1px solid #e3dbdc; display: flex; justify-content: space-between; align-items: center;">
+    <h2 style="margin: 0; font-family: 'Poppins', sans-serif; font-size: 20px; font-weight: 600; color: #1a1415;">Page settings</h2>
+    <button class="pe-btn-icon" (click)="closePageSettings()" style="border: none; background: transparent; cursor: pointer; padding: 0;">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1a1415" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+  </div>
+  <div style="padding: 32px 40px; overflow-y: auto; flex: 1; display: flex; flex-direction: column; gap: 24px;">
+    
+    <div>
+      <label style="display: block; font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 500; color: #1a1415; margin-bottom: 8px;">Title</label>
+      <input type="text" value="How Autopay works" style="width: 100%; padding: 12px 16px; border: 1px solid #ccc4c4; border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 14px; color: #1a1415; box-sizing: border-box;">
+    </div>
+
+    <div>
+      <label style="display: block; font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 500; color: #1a1415; margin-bottom: 8px;">Slug</label>
+      <input type="text" value="how-autopay-works" style="width: 100%; padding: 12px 16px; border: 1px solid #ccc4c4; border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 14px; color: #1a1415; box-sizing: border-box; margin-bottom: 4px;">
+      <p style="margin: 0; font-family: 'Poppins', sans-serif; font-size: 12px; color: #52494a; line-height: 16px;">Public address: developer.fonepay.com/docs/autopay-by-fonepay/introduction/how-autopay-works. If you change it, the old address redirects to the new one.</p>
+    </div>
+
+    <div>
+      <label style="display: block; font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 500; color: #1a1415; margin-bottom: 8px;">Section</label>
+      <select style="width: 100%; padding: 12px 16px; border: 1px solid #ccc4c4; border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 14px; color: #1a1415; box-sizing: border-box; appearance: none; background: white url('data:image/svg+xml;utf8,<svg width=\'24\' height=\'24\' viewBox=\'0 0 24 24\' fill=\'none\' xmlns=\'http://www.w3.org/2000/svg\'><path d=\'M6 9L12 15L18 9\' stroke=\'%231A1415\' stroke-width=\'1.5\' stroke-linecap=\'round\' stroke-linejoin=\'round\'/></svg>') no-repeat right 12px center; margin-bottom: 4px;">
+        <option>Introduction</option>
+      </select>
+      <p style="margin: 0; font-family: 'Poppins', sans-serif; font-size: 12px; color: #52494a; line-height: 16px;">Moving a page redirects its old address.</p>
+    </div>
+
+    <div>
+      <label style="display: block; font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 500; color: #1a1415; margin-bottom: 8px;">Parent page</label>
+      <select style="width: 100%; padding: 12px 16px; border: 1px solid #ccc4c4; border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 14px; color: #1a1415; box-sizing: border-box; appearance: none; background: white url('data:image/svg+xml;utf8,<svg width=\'24\' height=\'24\' viewBox=\'0 0 24 24\' fill=\'none\' xmlns=\'http://www.w3.org/2000/svg\'><path d=\'M6 9L12 15L18 9\' stroke=\'%231A1415\' stroke-width=\'1.5\' stroke-linecap=\'round\' stroke-linejoin=\'round\'/></svg>') no-repeat right 12px center; margin-bottom: 4px;">
+        <option>None, top-level page</option>
+      </select>
+      <p style="margin: 0; font-family: 'Poppins', sans-serif; font-size: 12px; color: #52494a; line-height: 16px;">A page with subpages cannot become a subpage.</p>
+    </div>
+
+  </div>
+  <div style="padding: 16px 24px; border-top: 1px solid #e3dbdc; display: flex; justify-content: flex-end; gap: 12px;">
+    <button style="padding: 12px 24px; border: 1px solid #ccc4c4; background: white; border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 500; color: #52494a; cursor: pointer;" (click)="closePageSettings()">Cancel</button>
+    <button style="padding: 12px 24px; border: none; background: #ce2027; border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 14px; font-weight: 500; color: white; cursor: pointer;" (click)="closePageSettings()">Save changes</button>
+  </div>
+</div>

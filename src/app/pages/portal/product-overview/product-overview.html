@@ -1,0 +1,106 @@
+<div class="editor-layout">
+  <app-editor-header [product]="product" *ngIf="!isPreviewMode">
+    <div status-badge *ngIf="product">
+      <span class="product-status-badge" 
+            [class.pe-badge-draft]="product.status === 'DRAFT'"
+            [class.pe-badge-review]="product.status === 'IN_REVIEW'"
+            [class.pe-badge-published]="product.status === 'PUBLISHED'">
+        {{ product.status === 'DRAFT' ? 'Draft' : product.status === 'IN_REVIEW' ? 'In review' : product.status === 'PUBLISHED' ? 'Published' : product.status }}
+      </span>
+    </div>
+  </app-editor-header>
+
+  <div *ngIf="isPreviewMode" style="background-color: #1a1415; color: white; padding: 12px 32px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100;">
+    <div><strong>Preview Mode</strong> <span style="margin-left: 12px; font-size: 14px; opacity: 0.8;">Showing how the page will look to users.</span></div>
+    <button class="pe-btn-outline" style="border: 1px solid white; color: white; background: transparent; border-radius: 8px; padding: 8px 16px; font-size: 14px; font-weight: 500; cursor: pointer;" (click)="preview()">Exit Preview</button>
+  </div>
+
+  <div class="main-content">
+
+
+    <div class="pe-content" style="flex: 1; padding: 0 32px;">
+      <div class="pe-editor-col" style="width: 100%; max-width: none;">
+        <!-- Badge and Action Row -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;" *ngIf="product && !isPreviewMode">
+          <div style="background-color: #f8e0cc; border: 1px solid #843d00; border-radius: 8px; padding: 2px 12px; color: #843d00; font-size: 12px; font-weight: 500;">
+            {{ product.status === 'PUBLISHED' ? 'Published · Draft changes' : 'Draft' }}
+          </div>
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <button class="pe-btn-outline" style="border: 1px solid #ce2027; color: #ce2027; border-radius: 8px;" (click)="preview()">Preview</button>
+            <button class="pe-btn-outline" style="background-color: #f5d2d4; border: none; color: #7c1317; border-radius: 8px;" (click)="saveDraft()" *ngIf="product.status !== 'IN_REVIEW'" [disabled]="isSaving">
+              {{ isSaving ? 'Saving...' : 'Save draft' }}
+            </button>
+            <button class="pe-btn-primary" style="border-radius: 8px;" (click)="submitForReview()" *ngIf="product.status === 'DRAFT'" [disabled]="isSaving">
+              {{ isSaving ? 'Submitting...' : 'Submit for review' }}
+            </button>
+            <button class="pe-btn-outline text-danger" style="border-radius: 8px;" (click)="withdrawReview()" *ngIf="product.status === 'IN_REVIEW'" [disabled]="isSaving">
+              Withdraw review
+            </button>
+            <!-- Page Menu Icon -->
+            <button class="pe-btn-outline" style="border: none; padding: 8px;">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8 8.66669C8.36819 8.66669 8.66667 8.36821 8.66667 8.00002C8.66667 7.63183 8.36819 7.33335 8 7.33335C7.63181 7.33335 7.33333 7.63183 7.33333 8.00002C7.33333 8.36821 7.63181 8.66669 8 8.66669Z" fill="#1A1415"/>
+                <path d="M12.6667 8.66669C13.0349 8.66669 13.3333 8.36821 13.3333 8.00002C13.3333 7.63183 13.0349 7.33335 12.6667 7.33335C12.2985 7.33335 12 7.63183 12 8.00002C12 8.36821 12.2985 8.66669 12.6667 8.66669Z" fill="#1A1415"/>
+                <path d="M3.33333 8.66669C3.70152 8.66669 4 8.36821 4 8.00002C4 7.63183 3.70152 7.33335 3.33333 7.33335C2.96514 7.33335 2.66667 7.63183 2.66667 8.00002C2.66667 8.36821 2.96514 8.66669 3.33333 8.66669Z" fill="#1A1415"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="pe-page-banner pe-banner-blue" *ngIf="!isPreviewMode && product?.status === 'IN_REVIEW'">
+          <div class="pe-banner-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 4a1 1 0 110 2 1 1 0 010-2zm-1 4a1 1 0 012 0v5a1 1 0 01-2 0v-5z" fill="#142e55"/>
+            </svg>
+          </div>
+          <div class="pe-banner-content">
+            <div class="pe-banner-title">Submitted for review</div>
+            <div class="pe-banner-text">Submitted to {{ product?.submittedBy }}, {{ product?.submittedAt | date:'short' }}. Editing is locked until they approve or ask for changes; you can still preview your submission.</div>
+          </div>
+        </div>
+
+        <div class="pe-page-banner pe-banner-orange" *ngIf="!isPreviewMode && product?.status === 'DRAFT' && product?.reviewNotes">
+          <div class="pe-banner-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2L2 20h20L12 2zM11 10h2v4h-2v-4zm0 6h2v2h-2v-2z" fill="#9c5a08"/>
+            </svg>
+          </div>
+          <div class="pe-banner-content">
+            <div class="pe-banner-title">Changes requested</div>
+            <div class="pe-banner-text">Reviewer asked for changes on {{ product?.reviewedAt | date:'short' }}: "{{ product?.reviewNotes }}"</div>
+          </div>
+        </div>
+
+        <div class="pe-page-header" *ngIf="!isPreviewMode">
+          <h2 class="pe-page-title">Overview page</h2>
+          <div class="pe-page-address">The public page at developer.fonepay.com/products/{{product?.slug}}.</div>
+        </div>
+
+        <div class="pe-divider" *ngIf="!isPreviewMode"></div>
+
+        <div class="pe-product-header" *ngIf="product && !isPreviewMode">
+          <div class="pe-ph-top">
+            <span class="pe-ph-note">Name and short description come from the product’s details.</span>
+            <button class="pe-btn-outline pe-ph-settings" [routerLink]="['/portal/products', productId, 'settings']">Product settings</button>
+          </div>
+          <div class="pe-ph-content">
+            <h1 class="pe-ph-title">{{ product.name }}</h1>
+            <p class="pe-ph-desc">{{ product.shortDescription }}</p>
+          </div>
+        </div>
+
+        <div *ngIf="product && isPreviewMode" style="padding: 40px 0 24px 0;">
+          <h1 style="font-size: 60px; font-weight: 600; color: #1a1415; letter-spacing: -1.5px; line-height: 72px; margin: 0 0 16px 0;">{{ product.name }}</h1>
+          <p style="font-size: 16px; font-weight: 400; color: #52494a; line-height: 24px; margin: 0;">{{ product.shortDescription }}</p>
+        </div>
+
+        <app-block-editor 
+          *ngIf="product" 
+          [blocks]="blocks" 
+          [isLocked]="isLocked" 
+          (blocksChange)="onBlocksChange($event)">
+        </app-block-editor>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,175 @@
+<div class="page-container">
+  
+  <div class="breadcrumbs">
+    <a routerLink="/portal/products">Products</a>
+    <span class="material-symbols-outlined">chevron_right</span>
+    <span>{{ product?.name || 'Loading...' }}</span>
+  </div>
+
+  <header class="page-header">
+    <h1 class="page-title">Product settings</h1>
+  </header>
+
+  <div class="settings-layout">
+    
+    <aside class="settings-sidebar">
+      <nav class="settings-nav">
+        <a class="nav-item" [class.active]="activeTab === 'details'" (click)="setTab('details')">Product Details</a>
+        <a class="nav-item" [class.active]="activeTab === 'seo'" (click)="setTab('seo')">SEO</a>
+        <a class="nav-item" [class.active]="activeTab === 'publishing'" (click)="setTab('publishing')">Publishing</a>
+      </nav>
+    </aside>
+
+    <main class="settings-content">
+      @if (loading) {
+        <div style="padding: 40px; text-align: center; color: #888;">Loading...</div>
+      } @else {
+        <div class="settings-card">
+          
+          @if (activeTab === 'details') {
+            <h2 class="card-title">Product Details</h2>
+            
+            <form [formGroup]="productForm" (ngSubmit)="saveChanges()" class="settings-form">
+              <div class="form-row">
+                <div class="form-group" style="flex: 2;">
+                  <label for="name">Name</label>
+                  <input type="text" id="name" class="form-control" formControlName="name" 
+                         (input)="onNameChange()" 
+                         [class.is-invalid]="productForm.get('name')?.invalid && productForm.get('name')?.touched"
+                         placeholder="Autopay by Fonepay">
+                </div>
+                <div class="form-group" style="flex: 1;">
+                  <label for="displayOrder">Order</label>
+                  <input type="number" id="displayOrder" class="form-control" formControlName="displayOrder"
+                         placeholder="1">
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label>Visibility</label>
+                <div class="radio-group">
+                  <label class="radio-option" [class.selected]="productForm.get('audience')?.value === 'PUBLIC'">
+                    <input type="radio" formControlName="audience" value="PUBLIC">
+                    <div class="radio-content">
+                      <span class="radio-title">Public</span>
+                      <span class="radio-desc">Visible to every developer and visitor.</span>
+                    </div>
+                  </label>
+                  <label class="radio-option" [class.selected]="productForm.get('audience')?.value === 'INTERNAL'">
+                    <input type="radio" formControlName="audience" value="INTERNAL">
+                    <div class="radio-content">
+                      <span class="radio-title">Internal</span>
+                      <span class="radio-desc">Hidden from external developers and Visitors.</span>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="slug">Slug</label>
+                <input type="text" id="slug" class="form-control" formControlName="slug"
+                       [class.is-invalid]="productForm.get('slug')?.invalid && productForm.get('slug')?.touched"
+                       placeholder="autopay-by-fonepay">
+                <div class="form-help">
+                  Public address: developer.fonepay.com/products/{{ productForm.get('slug')?.value || 'autopay-by-fonepay' }}. If you change it, the old address redirects to the new one.
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="shortDescription">Short description</label>
+                <input type="text" id="shortDescription" class="form-control" formControlName="shortDescription">
+              </div>
+              
+              <div class="form-group">
+                <label>Description (Overview)</label>
+                <div class="form-help" style="margin-top: 4px; margin-bottom: 8px;">
+                  The product description is now managed using the advanced block editor.
+                </div>
+                <a [routerLink]="['/portal/products', product?.id, 'overview']" class="btn-outline" style="display: inline-block; padding: 8px 16px; border-radius: 4px; border: 1px solid #ccc4c4; color: #1a1415; text-decoration: none; font-weight: 500;">
+                  Open Overview Page Editor
+                </a>
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" class="btn-primary" [disabled]="saving">
+                  {{ saving ? 'Saving...' : 'Save changes' }}
+                </button>
+              </div>
+            </form>
+          } @else if (activeTab === 'seo') {
+            <h2 class="card-title">SEO</h2>
+            
+            <form [formGroup]="seoForm" (ngSubmit)="saveSeoChanges()" class="settings-form">
+              <div class="form-group">
+                <label for="metaTitle">Meta title</label>
+                <input type="text" id="metaTitle" class="form-control" formControlName="metaTitle">
+              </div>
+              <div class="form-group">
+                <label for="metaDescription">Meta description</label>
+                <textarea id="metaDescription" class="form-control" formControlName="metaDescription" rows="4"></textarea>
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" class="btn-primary" [disabled]="saving">
+                  {{ saving ? 'Saving...' : 'Save changes' }}
+                </button>
+              </div>
+            </form>
+          } @else if (activeTab === 'publishing') {
+            <h2 class="card-title" style="margin-bottom: 12px;">Publishing</h2>
+            
+            @if (product?.status === 'PUBLISHED') {
+              <div class="publish-status">
+                <span class="status-badge status-published">Published</span>
+                <span class="status-text">This product is live on the portal.</span>
+              </div>
+              <button class="btn-outline-danger" (click)="openUnpublishModal()" style="margin-top: 16px;">Unpublish</button>
+            } @else {
+              <div class="publish-status">
+                <span class="status-badge status-draft">Draft</span>
+                <span class="status-text">This product has never been published. Publishing needs an approved revision of its overview page first.</span>
+              </div>
+              <button class="btn-primary" (click)="publishProduct()" style="margin-top: 16px;">Publish</button>
+            }
+          }
+
+        </div>
+      }
+    </main>
+
+  </div>
+</div>
+
+<!-- Unpublish Modal -->
+@if (showUnpublishModal) {
+  <div class="modal-overlay" (click)="closeUnpublishModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-icon warning">
+        <span class="material-symbols-outlined">priority_high</span>
+      </div>
+      <h2 class="modal-title" style="margin-top: 16px; margin-bottom: 8px;">Unpublish {{ product?.name }}?</h2>
+      <p class="modal-body" style="font-size: 13px; color: #4B5563; line-height: 1.5; margin-bottom: 24px;">
+        Its overview page and documentation leave the portal, and it drops out of the product list and registration. Developers who added it keep it on their account and see it again when you publish it. A product that has been published cannot be deleted.
+      </p>
+      <div class="modal-actions" style="display: flex; justify-content: center; gap: 12px;">
+        <button class="btn-text" (click)="closeUnpublishModal()">Cancel</button>
+        <button class="btn-danger-solid" (click)="unpublishProduct()">Unpublish</button>
+      </div>
+    </div>
+  </div>
+}
+
+<!-- Publish Error Modal -->
+@if (showPublishErrorModal) {
+  <div class="modal-overlay" (click)="closePublishErrorModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <h2 class="modal-title" style="margin-bottom: 12px;">Overview page not approved</h2>
+      <p class="modal-body" style="font-size: 13px; color: #4B5563; line-height: 1.5; margin-bottom: 24px;">
+        {{ product?.name }} cannot be published until its overview page has an approved revision. Submit it for review, or ask an Approver to review what is already in review, then try Publish again.
+      </p>
+      <div class="modal-actions" style="display: flex; justify-content: flex-end;">
+        <button class="btn-primary" (click)="closePublishErrorModal()">Got it</button>
+      </div>
+    </div>
+  </div>
+}

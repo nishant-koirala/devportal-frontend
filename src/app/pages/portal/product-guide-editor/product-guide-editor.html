@@ -1,0 +1,473 @@
+<div class="editor-layout">
+  <!-- Top Header Bar Area (Product Title + Breadcrumb) -->
+  <app-editor-header [product]="product">
+    <div status-badge>
+      <!-- You can put the published badge here if it applies to the product or page -->
+      <!-- Since it's currently hardcoded in guide editor, we'll keep it here for now -->
+      <span class="product-status-badge">Published</span>
+    </div>
+  </app-editor-header>
+
+  <div class="main-content">
+    <!-- Left Sidebar: CMS Tree -->
+    <app-cms-sidebar 
+      [productId]="productId"
+      [activePageId]="activePageId"
+      (pageSelected)="selectPage($event)"
+      (addSection)="openCreateSectionModal()"
+      (addPage)="openCreatePageModal($event)">
+    </app-cms-sidebar>
+
+    <!-- Right Pane: Editor -->
+    <main class="cms-editor">
+      <!-- No page selected -->
+      <div class="editor-placeholder" *ngIf="!activePageId">
+        <p>Select a page from the sidebar to start editing.</p>
+      </div>
+
+      <!-- Page Editor -->
+      <div class="page-editor" *ngIf="activePageId">
+        <!-- Page Editor Top Bar: Status + Actions -->
+        <!-- Conditionally rendering based on pageState -->
+        <div class="pe-topbar">
+          <div class="pe-status-pill" *ngIf="pageState === 'draft'">Published &middot; Draft changes</div>
+          <div class="pe-status-pill pe-status-pill-green" *ngIf="pageState === 'published'">Published</div>
+          <div class="pe-status-pill pe-status-pill-blue" *ngIf="pageState === 'in_review'">In review</div>
+          <div class="pe-status-pill pe-status-pill-orange" *ngIf="pageState === 'needs_changes'">Needs changes</div>
+          <div class="pe-status-pill pe-status-pill-outline-orange" *ngIf="pageState === 'unpublished'">Unpublished</div>
+          
+          <div class="pe-actions">
+            <!-- Review Badge / Changes Badge (if any) -->
+            <!-- We will handle these conditionally inside the editor top area later, 
+                 but in the Figma design they are big banners or small badges.
+                 For now, just render the standard buttons and dropdown. -->
+            
+            <button class="pe-btn-outline" (click)="previewPage()">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8 10C9.10457 10 10 9.10457 10 8C10 6.89543 9.10457 6 8 6C6.89543 6 6 6.89543 6 8C6 9.10457 6.89543 10 8 10Z" stroke="#706768" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M2 8C2.66667 6 4.66667 3.33331 8 3.33331C11.3333 3.33331 13.3333 6 14 8C13.3333 10 11.3333 12.6667 8 12.6667C4.66667 12.6667 2.66667 10 2 8Z" stroke="#706768" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Preview
+            </button>
+            <button class="pe-btn-outline" *ngIf="pageState === 'draft' || pageState === 'needs_changes' || pageState === 'unpublished'" (click)="saveDraft()" [disabled]="isSaving || !activePageMeta">
+              {{ isSaving ? 'Saving...' : 'Save draft' }}
+            </button>
+            <button class="pe-btn-primary" *ngIf="pageState === 'draft' || pageState === 'needs_changes'" (click)="submitForReview()" [disabled]="isSaving">
+              {{ isSaving ? 'Submitting...' : 'Submit for review' }}
+            </button>
+            <button class="pe-btn-outline" *ngIf="pageState === 'published'" (click)="openUnpublishModal()">Unpublish</button>
+            <button class="pe-btn-primary" *ngIf="pageState === 'unpublished'" (click)="publishPage()" [disabled]="isSaving">Republish</button>
+            <div class="dropdown-container">
+              <button class="pe-btn-icon" (click)="togglePageMenu($event)" [class.active]="pageMenuOpen">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M8 8.66669C8.36819 8.66669 8.66667 8.36821 8.66667 8.00002C8.66667 7.63183 8.36819 7.33335 8 7.33335C7.63181 7.33335 7.33333 7.63183 7.33333 8.00002C7.33333 8.36821 7.63181 8.66669 8 8.66669Z" fill="#1A1415"/>
+                  <path d="M12.6667 8.66669C13.0349 8.66669 13.3333 8.36821 13.3333 8.00002C13.3333 7.63183 13.0349 7.33335 12.6667 7.33335C12.2985 7.33335 12 7.63183 12 8.00002C12 8.36821 12.2985 8.66669 12.6667 8.66669Z" fill="#1A1415"/>
+                  <path d="M3.33333 8.66669C3.70152 8.66669 4 8.36821 4 8.00002C4 7.63183 3.70152 7.33335 3.33333 7.33335C2.96514 7.33335 2.66667 7.63183 2.66667 8.00002C2.66667 8.36821 2.96514 8.66669 3.33333 8.66669Z" fill="#1A1415"/>
+                </svg>
+              </button>
+              <div class="dropdown-menu page-dropdown" *ngIf="pageMenuOpen" (click)="$event.stopPropagation()">
+                <button class="dropdown-item" (click)="openSettingsDrawer()">Page settings</button>
+                <button class="dropdown-item" (click)="openRevisionDrawer()">Revision history</button>
+                <button class="dropdown-item">View on portal</button>
+                <div class="dropdown-divider"></div>
+                <button class="dropdown-item" (click)="openUnpublishModal()">Unpublish</button>
+                <div class="dropdown-divider"></div>
+                <button class="dropdown-item text-danger" (click)="openDeleteModal()">Delete page</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Banners -->
+        <div class="pe-page-banner pe-banner-blue" *ngIf="pageState === 'in_review'">
+          <div class="pe-banner-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 4a1 1 0 110 2 1 1 0 010-2zm-1 4a1 1 0 012 0v5a1 1 0 01-2 0v-5z" fill="#142e55"/>
+            </svg>
+          </div>
+          <div class="pe-banner-content">
+            <div class="pe-banner-title">Submitted for review</div>
+            <div class="pe-banner-text">Submitted for review on {{ activePageMeta?.updatedAt | date:'medium' }}. You can view the diff in the <a href="#" (click)="openRevisionDrawer(); $event.preventDefault()">Revision history</a> menu.</div>
+          </div>
+        </div>
+
+        <div class="pe-page-banner pe-banner-orange" *ngIf="pageState === 'needs_changes'">
+          <div class="pe-banner-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2L2 20h20L12 2zM11 10h2v4h-2v-4zm0 6h2v2h-2v-2z" fill="#9c5a08"/>
+            </svg>
+          </div>
+          <div class="pe-banner-content">
+            <div class="pe-banner-title">Changes requested</div>
+            <div class="pe-banner-text">Reviewer asked for changes on {{ activePageMeta?.updatedAt | date:'medium' }}: "{{ activePageMeta?.reviewNotes || 'Please update the page and resubmit.' }}"</div>
+          </div>
+        </div>
+
+        <!-- Page Title -->
+        <h2 class="pe-page-title" *ngIf="activePageMeta">{{ activePageMeta.title }}</h2>
+        <h2 class="pe-page-title" *ngIf="!activePageMeta" style="color: #ccc4c4;">Select a page</h2>
+
+        <!-- Divider -->
+        <div class="pe-divider"></div>
+
+        <!-- Content Blocks Column -->
+        <div class="pe-column" *ngIf="activePageMeta" cdkDropList (cdkDropListDropped)="dropBlock($event)" [cdkDropListDisabled]="pageState === 'in_review'" [class.pe-locked]="pageState === 'in_review'">
+          
+          <div class="pe-block" *ngFor="let block of pageBlocks; let i = index" cdkDrag (click)="selectBlock(i)" [class.pe-block-selected]="selectedBlockIndex === i">
+            <div class="pe-drag-handle" cdkDragHandle>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="5.5" cy="4.5" r="1" fill="#706768"/>
+                <circle cx="5.5" cy="8" r="1" fill="#706768"/>
+                <circle cx="5.5" cy="11.5" r="1" fill="#706768"/>
+                <circle cx="10.5" cy="4.5" r="1" fill="#706768"/>
+                <circle cx="10.5" cy="8" r="1" fill="#706768"/>
+                <circle cx="10.5" cy="11.5" r="1" fill="#706768"/>
+              </svg>
+            </div>
+            
+            <button class="pe-btn-icon" style="position: absolute; right: 8px; top: 8px;" (click)="removeBlock(i)" title="Remove block">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 4L4 12M4 4L12 12" stroke="#CE2027" stroke-width="1.5" stroke-linecap="round"/>
+              </svg>
+            </button>
+
+            <div [ngSwitch]="block.type" style="width: 100%;">
+              <!-- PARAGRAPH -->
+              <div *ngSwitchCase="'PARAGRAPH'">
+                 <textarea [(ngModel)]="block.data.text" style="border:none; resize: none; background: transparent; padding:0; font-size:16px; color:#52494a; width: 100%; min-height: 48px;" placeholder="Type text here..."></textarea>
+              </div>
+
+              <!-- HEADING -->
+              <div *ngSwitchCase="'HEADING'" class="pe-section">
+                <input [(ngModel)]="block.data.text" class="pe-heading" style="border:none; background: transparent; width: 100%; margin:0; padding:0; font-size: 24px; font-weight: 600;" placeholder="Heading">
+              </div>
+
+              <!-- ENDPOINT -->
+              <div *ngSwitchCase="'ENDPOINT'">
+                <div class="pe-endpoint-badges">
+                  <span class="pe-endpoint-badge" *ngIf="block.data.isPlainJson">Plain JSON</span>
+                  <span class="pe-endpoint-badge" *ngIf="block.data.noBearerRequired">No bearer required</span>
+                </div>
+                <div class="pe-endpoint-url-bar" style="display: flex; gap: 8px;">
+                  <select [(ngModel)]="block.data.method" class="pe-endpoint-method" style="background: transparent; border: none; font-weight: 600; color: #1a1415;">
+                    <option>GET</option>
+                    <option>POST</option>
+                    <option>PUT</option>
+                    <option>DELETE</option>
+                  </select>
+                  <span class="pe-endpoint-baseurl">{{ '{{baseurl}}' }}</span>
+                  <input [(ngModel)]="block.data.path" class="pe-endpoint-path" style="border:none; background:transparent; flex:1;" placeholder="/api/path">
+                </div>
+              </div>
+
+              <!-- NOTE_WARNING -->
+              <div *ngSwitchCase="'NOTE_WARNING'" class="pe-alert pe-alert-info">
+                <div class="pe-alert-icon">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 4a1 1 0 110 2 1 1 0 010-2zm-1 4a1 1 0 012 0v5a1 1 0 01-2 0v-5z" fill="#142e55"/>
+                  </svg>
+                </div>
+                <div class="pe-alert-content">
+                  <input [(ngModel)]="block.data.title" class="pe-alert-title" style="background:transparent; border:none; font-weight:600; width: 100%; color:inherit; margin-bottom:4px;" placeholder="Alert Title">
+                  <textarea [(ngModel)]="block.data.message" class="pe-alert-body" style="background:transparent; border:none; width: 100%; color:inherit; resize:none; padding:0;" placeholder="Alert message..."></textarea>
+                </div>
+              </div>
+
+              <!-- CODE -->
+              <div *ngSwitchCase="'CODE'" class="pe-code-panel">
+                <div class="pe-code-header">
+                  <div class="pe-code-tabs">
+                    <div class="pe-code-tab active">
+                      <input [(ngModel)]="block.data.language" style="background:transparent; border:none; color:inherit; width: 60px;" placeholder="Language">
+                    </div>
+                  </div>
+                </div>
+                <div class="pe-code-body" style="padding: 16px;">
+                  <textarea [(ngModel)]="block.data.code" style="background:transparent; border:none; width: 100%; color:#fff; resize:none; font-family:monospace; min-height:80px; padding:0; box-shadow:none; outline:none;" placeholder="Paste code here..."></textarea>
+                </div>
+              </div>
+
+              <!-- PARAMETER_TABLE -->
+              <div *ngSwitchCase="'PARAMETER_TABLE'" class="pe-section">
+                <h3 class="pe-heading">Request Parameters</h3>
+                <div class="pe-param-list">
+                  <div class="pe-param-item" *ngFor="let param of block.data.parameters; let pIdx = index">
+                    <div class="pe-param-header">
+                      <input [(ngModel)]="param.name" class="pe-param-name" style="border:none; font-weight:600; width:120px;" placeholder="Name">
+                      <input [(ngModel)]="param.type" class="pe-param-type" style="border:none; color:#706768; flex:1;" placeholder="String, 5 to 75 characters">
+                      <select [(ngModel)]="param.required" style="border:none; color:#CE2027; background:transparent; font-size:14px; font-weight:500;">
+                        <option [ngValue]="true">required</option>
+                        <option [ngValue]="false">optional</option>
+                      </select>
+                      <button class="pe-btn-icon" (click)="removeParameterFromBlock(block, pIdx)" style="margin-left: 8px;">
+                        <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor"><path d="M12 4L4 12M4 4L12 12" stroke-width="1.5" stroke-linecap="round"/></svg>
+                      </button>
+                    </div>
+                    <textarea [(ngModel)]="param.description" class="pe-param-desc" style="border:none; background:transparent; width: 100%; resize:none; padding:0; margin-top:4px;" placeholder="Description..."></textarea>
+                  </div>
+                  <button class="pe-btn-outline" style="margin-top: 8px; padding: 4px 8px; font-size: 12px;" (click)="addParameterToBlock(block)">+ Add parameter</button>
+                </div>
+              </div>
+
+              <!-- TABLE -->
+              <div *ngSwitchCase="'TABLE'" class="pe-section" style="overflow-x: auto;">
+                <table class="pe-table" style="width: 100%; border-collapse: collapse; min-width: 600px;">
+                  <thead>
+                    <tr>
+                      <th *ngFor="let header of block.data.headers; let cIdx = index; trackBy: trackByIndex" style="border-bottom: 1px solid #ccc4c4; padding: 8px; text-align: left; background: #f7f6f6; position: relative;">
+                        <input [(ngModel)]="block.data.headers[cIdx]" style="background:transparent; border:none; font-weight:600; width:calc(100% - 20px);" placeholder="Header">
+                        <button class="pe-btn-icon" (click)="removeTableColumn(block, cIdx)" style="position: absolute; right: 2px; top: 8px;" title="Remove Column">
+                          <svg width="12" height="12" viewBox="0 0 16 16" stroke="#ce2027"><path d="M12 4L4 12M4 4L12 12" stroke-width="2"/></svg>
+                        </button>
+                      </th>
+                      <th style="width: 40px; border-bottom: 1px solid #ccc4c4; padding: 8px; background: #f7f6f6;">
+                        <button class="pe-btn-icon" (click)="addTableColumn(block)" title="Add Column">
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14" stroke-width="2"/></svg>
+                        </button>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr *ngFor="let row of block.data.rows; let rIdx = index">
+                      <td *ngFor="let header of block.data.headers; let cIdx = index; trackBy: trackByIndex" style="border-bottom: 1px solid #ccc4c4; padding: 8px;">
+                        <textarea [(ngModel)]="row[cIdx]" style="border:none; width:100%; background:transparent; resize:none; box-shadow:none; outline:none;" placeholder="Data..."></textarea>
+                      </td>
+                      <td style="border-bottom: 1px solid #ccc4c4; padding: 8px; text-align: center;">
+                        <button class="pe-btn-icon" (click)="removeTableRow(block, rIdx)" title="Remove Row">
+                           <svg width="12" height="12" viewBox="0 0 16 16" stroke="#ce2027"><path d="M12 4L4 12M4 4L12 12" stroke-width="2"/></svg>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+                <button class="pe-btn-outline" style="margin-top: 8px; padding: 4px 8px; font-size: 12px;" (click)="addTableRow(block)">+ Add row</button>
+              </div>
+
+              <!-- IMAGE -->
+              <div *ngSwitchCase="'IMAGE'" class="pe-section">
+                <div *ngIf="!block.data.url" style="border: 1px dashed #ccc4c4; padding: 16px; text-align: center; color: #706768; border-radius: 8px;">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-bottom: 8px;">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21 15 16 10 5 21"></polyline>
+                  </svg><br>
+                  <input [(ngModel)]="block.data.url" placeholder="Paste image URL here..." style="width: 80%; max-width: 400px; padding: 8px; border: 1px solid #ccc4c4; border-radius: 4px; margin-top: 8px;">
+                </div>
+                <div *ngIf="block.data.url" style="display:flex; flex-direction: column; align-items: center;">
+                  <img [src]="block.data.url" style="max-width: 100%; border-radius: 8px; border: 1px solid #ccc4c4;" alt="Image preview">
+                  <input [(ngModel)]="block.data.url" style="margin-top: 8px; width: 100%; border:none; background:transparent; font-size: 12px; color: #706768;" placeholder="Image URL">
+                  <input [(ngModel)]="block.data.caption" style="margin-top: 4px; width: 100%; text-align: center; border:none; background:transparent; font-style: italic; color: #52494a;" placeholder="Caption (optional)">
+                </div>
+              </div>
+
+              <!-- FAQ -->
+              <div *ngSwitchCase="'FAQ'" class="pe-section">
+                 <input [(ngModel)]="block.data.question" style="border:none; font-weight:600; width: 100%; font-size:16px; margin-bottom: 8px; background:transparent;" placeholder="Question">
+                 <textarea [(ngModel)]="block.data.answer" style="border:none; width: 100%; resize:none; padding:0; background:transparent; box-shadow:none; outline:none;" placeholder="Answer"></textarea>
+              </div>
+
+              <!-- TEST_CREDENTIAL -->
+              <div *ngSwitchCase="'TEST_CREDENTIAL'" class="pe-section">
+                <div style="background: #f7f6f6; border-radius: 8px; padding: 16px;">
+                  <input [(ngModel)]="block.data.title" style="background:transparent; border:none; font-weight:600; width:100%; margin-bottom:8px; box-shadow:none; outline:none;" placeholder="Credential Title (e.g. Test Card)">
+                  <textarea [(ngModel)]="block.data.details" style="background:transparent; border:none; width: 100%; resize:none; padding:0; font-family:monospace; box-shadow:none; outline:none;" placeholder="Details JSON or text..."></textarea>
+                </div>
+              </div>
+
+              <!-- DEFAULT FALLBACK -->
+              <div *ngSwitchDefault class="pe-section">
+                <p class="pe-text" style="color: #706768; font-style: italic;">[{{ block.type }} block placeholder]</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Add Block -->
+          <div class="pe-add-block" style="position: relative;">
+            <button class="pe-btn-add-block" (click)="toggleBlockPicker($event)">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8 3.33331V12.6666" stroke="#7C1317" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M3.33337 8H12.6667" stroke="#7C1317" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              Add block
+            </button>
+            <div class="pe-block-picker" *ngIf="isBlockPickerOpen" (click)="$event.stopPropagation()">
+              <button class="pe-block-type-btn" (click)="addBlock('PARAGRAPH'); isBlockPickerOpen = false">Rich text</button>
+              <button class="pe-block-type-btn" (click)="addBlock('HEADING'); isBlockPickerOpen = false">Heading</button>
+              <button class="pe-block-type-btn" (click)="addBlock('TABLE'); isBlockPickerOpen = false">Table</button>
+              <button class="pe-block-type-btn" (click)="addBlock('IMAGE'); isBlockPickerOpen = false">Image</button>
+              <button class="pe-block-type-btn" (click)="addBlock('CODE'); isBlockPickerOpen = false">Code</button>
+              <button class="pe-block-type-btn" (click)="addBlock('NOTE_WARNING'); isBlockPickerOpen = false">Note</button>
+              <button class="pe-block-type-btn" (click)="addBlock('PARAMETER_TABLE'); isBlockPickerOpen = false">Parameter list</button>
+              <button class="pe-block-type-btn" (click)="addBlock('TEST_CREDENTIAL'); isBlockPickerOpen = false">Test credentials</button>
+              <button class="pe-block-type-btn" (click)="addBlock('FAQ'); isBlockPickerOpen = false">FAQ</button>
+              <button class="pe-block-type-btn" (click)="addBlock('ENDPOINT'); isBlockPickerOpen = false">API Endpoint</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Create Section/Page Modal -->
+<div class="modal-overlay" *ngIf="isCreateModalOpen" (click)="closeCreateModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>Create New {{ modalContext === 'section' ? 'Section' : 'Page' }}</h2>
+      <button class="close-btn" (click)="closeCreateModal()">
+        <span class="material-symbols-outlined" style="font-size: 20px;">close</span>
+      </button>
+    </div>
+
+    <form (ngSubmit)="submitCreate()">
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="itemTitle">{{ modalContext === 'section' ? 'Section' : 'Page' }} Name</label>
+          <input type="text" id="itemTitle" class="form-control" name="title" 
+                 [(ngModel)]="newTitle" (input)="onTitleChange()"
+                 [placeholder]="modalContext === 'section' ? 'e.g. Getting Started' : 'e.g. Authentication'" required>
+        </div>
+        <div class="form-group" style="margin-top: 16px;">
+          <label for="itemSlug">Slug</label>
+          <input type="text" id="itemSlug" class="form-control" name="slug" 
+                 [(ngModel)]="newSlug"
+                 [placeholder]="modalContext === 'section' ? 'e.g. getting-started' : 'e.g. authentication'" required>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="margin-top: 24px; display: flex; gap: 12px; justify-content: flex-end;">
+        <button type="button" class="btn-cancel" (click)="closeCreateModal()" style="padding: 8px 16px; background: none; border: 1px solid #CCC4C4; border-radius: 8px; cursor: pointer;">Cancel</button>
+        <button type="submit" class="btn-primary" [disabled]="isCreating || !newTitle" style="padding: 8px 16px; background-color: #CE2027; color: white; border: none; border-radius: 8px; cursor: pointer;">
+          {{ isCreating ? 'Creating...' : 'Create ' + (modalContext === 'section' ? 'Section' : 'Page') }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Page Settings Drawer -->
+<div class="drawer-overlay" *ngIf="isSettingsDrawerOpen" (click)="closeSettingsDrawer()">
+  <div class="drawer-content" (click)="$event.stopPropagation()">
+    <div class="drawer-header">
+      <h2>Page settings</h2>
+      <button class="btn-close" (click)="closeSettingsDrawer()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 6L6 18M6 6l12 12" stroke="#52494A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+    <div class="drawer-body">
+      <div class="form-group" *ngIf="activePageMeta">
+        <label for="pageTitle">Title</label>
+        <input type="text" id="pageTitle" class="form-control" [(ngModel)]="activePageMeta.title" [disabled]="pageState === 'in_review'">
+      </div>
+      <div class="form-group" *ngIf="activePageMeta">
+        <label for="pageSlug">Slug</label>
+        <input type="text" id="pageSlug" class="form-control" [(ngModel)]="activePageMeta.slug" [disabled]="pageState === 'in_review'">
+        <div class="form-help-text">Public address: developer.fonepay.com/docs/autopay-by-fonepay/introduction/how-autopay-works. If you change it, the old address redirects to the new one.</div>
+      </div>
+      <div class="form-group">
+        <label for="pageSection">Section</label>
+        <select id="pageSection" class="form-control" style="appearance: auto;">
+          <option>Introduction</option>
+        </select>
+        <div class="form-help-text">Moving a page redirects its old address.</div>
+      </div>
+      <div class="form-group">
+        <label for="parentPage">Parent page</label>
+        <select id="parentPage" class="form-control" style="appearance: auto;">
+          <option>None, top-level page</option>
+        </select>
+        <div class="form-help-text">A page with subpages cannot become a subpage.</div>
+      </div>
+    </div>
+    <div class="drawer-footer">
+      <button class="pe-btn-outline" (click)="closeSettingsDrawer()">Cancel</button>
+      <button class="pe-btn-primary" *ngIf="pageState !== 'in_review'">Save changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- Revision History Drawer -->
+<div class="drawer-overlay" *ngIf="isRevisionDrawerOpen" (click)="closeRevisionDrawer()">
+  <div class="drawer-content bg-white" (click)="$event.stopPropagation()">
+    <div class="drawer-header">
+      <h2>Revision history</h2>
+      <button class="btn-close" (click)="closeRevisionDrawer()">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M18 6L6 18M6 6l12 12" stroke="#52494A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+    <div class="drawer-body no-padding">
+      <!-- Current Draft (Placeholder for latest) -->
+      <div class="revision-item current" *ngIf="activePageMeta">
+        <div class="revision-content">
+          <div class="revision-title">{{ activePageMeta.createdBy || 'Unknown User' }} (current draft)</div>
+          <div class="revision-desc">Editing in progress...</div>
+        </div>
+      </div>
+      
+      <!-- Loaded Revisions -->
+      <div class="revision-item" *ngFor="let rev of revisions">
+        <div class="revision-content">
+          <div class="revision-title">
+            {{ rev.createdBy || 'System' }}, version {{ rev.version }}
+            <span class="revision-pill" *ngIf="rev.published">Published</span>
+          </div>
+          <div class="revision-desc">{{ rev.commitMessage || 'No commit message' }}</div>
+        </div>
+        <button class="pe-btn-outline" style="color: #ce2027; border-color: #ce2027; padding: 4px 12px; height: auto;" (click)="restoreRevision(rev.version)">Restore</button>
+      </div>
+
+      <div *ngIf="!isLoadingRevisions && revisions.length === 0" style="padding: 16px; color: #706768; text-align: center;">
+        No earlier revisions found.
+      </div>
+      <div *ngIf="isLoadingRevisions" style="padding: 16px; color: #706768; text-align: center;">
+        Loading revisions...
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Page Modal -->
+<div class="modal-overlay" *ngIf="isDeleteModalOpen" (click)="closeDeleteModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()" style="width: 400px;">
+    <div class="modal-header">
+      <h2>Delete page</h2>
+      <button class="close-btn" (click)="closeDeleteModal()">
+        <span class="material-symbols-outlined" style="font-size: 20px;">close</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p style="margin: 0; font-size: 14px; color: #52494A;">Are you sure you want to delete this page? This action cannot be undone.</p>
+    </div>
+    <div class="modal-footer" style="margin-top: 24px; display: flex; gap: 12px; justify-content: flex-end;">
+      <button type="button" class="pe-btn-outline" (click)="closeDeleteModal()" [disabled]="isSaving">Cancel</button>
+      <button type="button" class="pe-btn-primary" (click)="confirmDeletePage()" [disabled]="isSaving">
+        {{ isSaving ? 'Deleting...' : 'Delete' }}
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Unpublish Page Modal -->
+<div class="modal-overlay" *ngIf="isUnpublishModalOpen" (click)="closeUnpublishModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()" style="width: 400px;">
+    <div class="modal-header">
+      <h2>Unpublish page</h2>
+      <button class="close-btn" (click)="closeUnpublishModal()">
+        <span class="material-symbols-outlined" style="font-size: 20px;">close</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p style="margin: 0; font-size: 14px; color: #52494A;">Are you sure you want to unpublish this page? It will no longer be visible on the developer portal.</p>
+    </div>
+    <div class="modal-footer" style="margin-top: 24px; display: flex; gap: 12px; justify-content: flex-end;">
+      <button type="button" class="pe-btn-outline" (click)="closeUnpublishModal()" [disabled]="isSaving">Cancel</button>
+      <button type="button" class="pe-btn-primary" (click)="confirmUnpublishPage()" [disabled]="isSaving">
+        {{ isSaving ? 'Unpublishing...' : 'Unpublish' }}
+      </button>
+    </div>
+  </div>
+</div>

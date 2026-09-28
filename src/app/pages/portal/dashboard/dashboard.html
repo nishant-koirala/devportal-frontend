@@ -1,0 +1,97 @@
+<div class="dashboard-container">
+  
+  <header class="dashboard-header">
+    <div class="header-titles">
+      <span class="welcome-text">Welcome back,</span>
+      <h1 class="user-greeting">{{ userName }}</h1>
+    </div>
+    <div class="header-actions">
+      <button class="btn-secondary">Send announcement</button>
+      <button class="btn-primary">New page</button>
+    </div>
+  </header>
+
+  @if (loading) {
+    <div style="padding: 40px; text-align: center; color: #888;">Loading dashboard data...</div>
+  } @else if (error) {
+    <div style="padding: 40px; text-align: center; color: #CE2027;">{{ error }}</div>
+  } @else if (data) {
+    <div class="stat-cards-row">
+      <div class="stat-card">
+        <span class="stat-number">{{ data.totalProducts }}</span>
+        <span class="stat-label">Total products</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number">{{ data.pendingReviews }}</span>
+        <span class="stat-label">Pending reviews</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number">{{ data.pendingAccessRequests }}</span>
+        <span class="stat-label">Pending access requests</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-number">{{ data.totalDevelopers }}</span>
+        <span class="stat-label">Total developers</span>
+      </div>
+    </div>
+
+    <div class="lists-row">
+      <div class="list-card">
+        <div class="list-header">
+          <h2 class="list-title">Review queue</h2>
+          <a href="#" class="view-all">View all</a>
+        </div>
+        <div class="list-items">
+          @for (item of data.reviewQueue; track item.id) {
+            <div class="list-item">
+              <div class="item-details">
+                <span class="item-title">{{ item.title }}</span>
+                <span class="item-meta">{{ item.meta }}</span>
+              </div>
+              <button class="btn-outline-red">Review</button>
+            </div>
+          } @empty {
+            <div style="padding: 20px; color: #888; text-align: center; font-size: 14px;">No pages pending review.</div>
+          }
+        </div>
+      </div>
+
+      <div class="list-card">
+        <div class="list-header">
+          <h2 class="list-title">Access requests</h2>
+          <a href="#" class="view-all">View all</a>
+        </div>
+        <div class="list-items">
+          @for (item of data.accessRequests; track item.id) {
+            <div class="list-item">
+              <div class="item-details">
+                <span class="item-title">{{ item.title }}</span>
+                <span class="item-meta">{{ item.meta }}</span>
+              </div>
+              <button class="btn-outline-red">Decide</button>
+            </div>
+          } @empty {
+            <div style="padding: 20px; color: #888; text-align: center; font-size: 14px;">No pending access requests.</div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="list-card full-width">
+      <div class="list-header">
+        <h2 class="list-title">Recent activity</h2>
+        <a href="#" class="view-all">Open the audit log</a>
+      </div>
+      <div class="activity-items">
+        @for (item of data.recentActivity; track item.id) {
+          <div class="activity-item">
+            <span class="activity-desc">{{ item.description }}</span>
+            <span class="activity-time">{{ item.time }}</span>
+          </div>
+        } @empty {
+            <div style="padding: 20px; color: #888; text-align: center; font-size: 14px;">No recent activity found.</div>
+        }
+      </div>
+    </div>
+  }
+</div>
