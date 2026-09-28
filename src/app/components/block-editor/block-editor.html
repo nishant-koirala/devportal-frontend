@@ -1,0 +1,212 @@
+<div class="pe-column" cdkDropList (cdkDropListDropped)="dropBlock($event)" [cdkDropListDisabled]="isLocked" [class.pe-locked]="isLocked">
+  <div class="pe-block" *ngFor="let block of blocks; let i = index" cdkDrag (click)="selectBlock(i)" [class.pe-block-selected]="selectedBlockIndex === i">
+    <div class="pe-drag-handle" cdkDragHandle>
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="5.5" cy="4.5" r="1" fill="#706768"/>
+        <circle cx="5.5" cy="8" r="1" fill="#706768"/>
+        <circle cx="5.5" cy="11.5" r="1" fill="#706768"/>
+        <circle cx="10.5" cy="4.5" r="1" fill="#706768"/>
+        <circle cx="10.5" cy="8" r="1" fill="#706768"/>
+        <circle cx="10.5" cy="11.5" r="1" fill="#706768"/>
+      </svg>
+    </div>
+    
+    <button class="pe-btn-icon" style="position: absolute; right: 8px; top: 8px;" (click)="removeBlock(i)" title="Remove block" *ngIf="!isLocked">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 4L4 12M4 4L12 12" stroke="#CE2027" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </button>
+
+    <div [ngSwitch]="block.type" style="width: 100%;">
+      <!-- PARAGRAPH -->
+      <div *ngSwitchCase="'PARAGRAPH'">
+         <textarea [(ngModel)]="block.data.text" style="border:none; resize: none; background: transparent; padding:0; font-size:16px; color:#52494a; width: 100%; min-height: 48px;" placeholder="Type text here..." [readonly]="isLocked"></textarea>
+      </div>
+
+      <!-- HEADING -->
+      <div *ngSwitchCase="'HEADING'" class="pe-section">
+        <input [(ngModel)]="block.data.text" class="pe-heading" style="border:none; background: transparent; width: 100%; margin:0; padding:0; font-size: 24px; font-weight: 600;" placeholder="Heading" [readonly]="isLocked">
+      </div>
+
+      <!-- ENDPOINT -->
+      <div *ngSwitchCase="'ENDPOINT'">
+        <div class="pe-endpoint-badges">
+          <span class="pe-endpoint-badge" *ngIf="block.data.isPlainJson">Plain JSON</span>
+          <span class="pe-endpoint-badge" *ngIf="block.data.noBearerRequired">No bearer required</span>
+        </div>
+        <div class="pe-endpoint-url-bar" style="display: flex; gap: 8px;">
+          <select [(ngModel)]="block.data.method" class="pe-endpoint-method" style="background: transparent; border: none; font-weight: 600; color: #1a1415;" [disabled]="isLocked">
+            <option>GET</option>
+            <option>POST</option>
+            <option>PUT</option>
+            <option>DELETE</option>
+          </select>
+          <span class="pe-endpoint-baseurl">{{ '{{baseurl}}' }}</span>
+          <input [(ngModel)]="block.data.path" class="pe-endpoint-path" style="border:none; background:transparent; flex:1;" placeholder="/api/path" [readonly]="isLocked">
+        </div>
+      </div>
+
+      <!-- NOTE_WARNING -->
+      <div *ngSwitchCase="'NOTE_WARNING'" class="pe-alert pe-alert-info">
+        <div class="pe-alert-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm0 4a1 1 0 110 2 1 1 0 010-2zm-1 4a1 1 0 012 0v5a1 1 0 01-2 0v-5z" fill="#142e55"/>
+          </svg>
+        </div>
+        <div class="pe-alert-content">
+          <input [(ngModel)]="block.data.title" class="pe-alert-title" style="background:transparent; border:none; font-weight:600; width: 100%; color:inherit; margin-bottom:4px;" placeholder="Alert Title" [readonly]="isLocked">
+          <textarea [(ngModel)]="block.data.message" class="pe-alert-body" style="background:transparent; border:none; width: 100%; color:inherit; resize:none; padding:0;" placeholder="Alert message..." [readonly]="isLocked"></textarea>
+        </div>
+      </div>
+
+      <!-- CODE -->
+      <div *ngSwitchCase="'CODE'" class="pe-code-panel">
+        <div class="pe-code-header">
+          <div class="pe-code-tabs">
+            <div class="pe-code-tab active">
+              <input [(ngModel)]="block.data.language" style="background:transparent; border:none; color:inherit; width: 60px;" placeholder="Language" [readonly]="isLocked">
+            </div>
+          </div>
+        </div>
+        <div class="pe-code-body" style="padding: 16px;">
+          <textarea [(ngModel)]="block.data.code" style="background:transparent; border:none; width: 100%; color:#fff; resize:none; font-family:monospace; min-height:80px; padding:0; box-shadow:none; outline:none;" placeholder="Paste code here..." [readonly]="isLocked"></textarea>
+        </div>
+      </div>
+
+      <!-- PARAMETER_TABLE -->
+      <div *ngSwitchCase="'PARAMETER_TABLE'" class="pe-section">
+        <h3 class="pe-heading">Request Parameters</h3>
+        <div class="pe-param-list">
+          <div class="pe-param-item" *ngFor="let param of block.data.parameters; let pIdx = index">
+            <div class="pe-param-header">
+              <input [(ngModel)]="param.name" class="pe-param-name" style="border:none; font-weight:600; width:120px;" placeholder="Name" [readonly]="isLocked">
+              <input [(ngModel)]="param.type" class="pe-param-type" style="border:none; color:#706768; flex:1;" placeholder="String, 5 to 75 characters" [readonly]="isLocked">
+              <select [(ngModel)]="param.required" style="border:none; color:#CE2027; background:transparent; font-size:14px; font-weight:500;" [disabled]="isLocked">
+                <option [ngValue]="true">required</option>
+                <option [ngValue]="false">optional</option>
+              </select>
+              <button class="pe-btn-icon" (click)="removeParameterFromBlock(block, pIdx)" style="margin-left: 8px;" *ngIf="!isLocked">
+                <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="currentColor"><path d="M12 4L4 12M4 4L12 12" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+            </div>
+            <textarea [(ngModel)]="param.description" class="pe-param-desc" style="border:none; background:transparent; width: 100%; resize:none; padding:0; margin-top:4px;" placeholder="Description..." [readonly]="isLocked"></textarea>
+          </div>
+          <button class="pe-btn-outline" style="margin-top: 8px; padding: 4px 8px; font-size: 12px;" (click)="addParameterToBlock(block)" *ngIf="!isLocked">+ Add parameter</button>
+        </div>
+      </div>
+
+      <!-- TABLE -->
+      <div *ngSwitchCase="'TABLE'" class="pe-section" style="overflow-x: auto;">
+        <table class="pe-table" style="width: 100%; border-collapse: collapse; min-width: 600px;">
+          <thead>
+            <tr>
+              <th *ngFor="let header of block.data.headers; let cIdx = index; trackBy: trackByIndex" style="border-bottom: 1px solid #ccc4c4; padding: 8px; text-align: left; background: #f7f6f6; position: relative;">
+                <input [(ngModel)]="block.data.headers[cIdx]" style="background:transparent; border:none; font-weight:600; width:calc(100% - 20px);" placeholder="Header" [readonly]="isLocked">
+                <button class="pe-btn-icon" (click)="removeColumnFromBlock(block, cIdx)" style="position: absolute; right: 2px; top: 8px;" title="Remove Column" *ngIf="!isLocked">
+                  <svg width="12" height="12" viewBox="0 0 16 16" stroke="#ce2027"><path d="M12 4L4 12M4 4L12 12" stroke-width="2"/></svg>
+                </button>
+              </th>
+              <th style="width: 40px; border-bottom: 1px solid #ccc4c4; padding: 8px; background: #f7f6f6;" *ngIf="!isLocked">
+                <button class="pe-btn-icon" (click)="addColumnToBlock(block)" title="Add Column">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M12 5v14M5 12h14" stroke-width="2"/></svg>
+                </button>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let row of block.data.rows; let rIdx = index">
+              <td *ngFor="let header of block.data.headers; let cIdx = index; trackBy: trackByIndex" style="border-bottom: 1px solid #ccc4c4; padding: 8px;">
+                <textarea [(ngModel)]="row[cIdx]" style="border:none; width:100%; background:transparent; resize:none; box-shadow:none; outline:none;" placeholder="Data..." [readonly]="isLocked"></textarea>
+              </td>
+              <td style="border-bottom: 1px solid #ccc4c4; padding: 8px; text-align: center;" *ngIf="!isLocked">
+                <button class="pe-btn-icon" (click)="removeRowFromBlock(block, rIdx)" title="Remove Row">
+                   <svg width="12" height="12" viewBox="0 0 16 16" stroke="#ce2027"><path d="M12 4L4 12M4 4L12 12" stroke-width="2"/></svg>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <button class="pe-btn-outline" style="margin-top: 8px; padding: 4px 8px; font-size: 12px;" (click)="addRowToBlock(block)" *ngIf="!isLocked">+ Add row</button>
+      </div>
+
+      <!-- IMAGE -->
+      <div *ngSwitchCase="'IMAGE'" class="pe-section">
+        <div *ngIf="!block.data.url && !isLocked" style="border: 1px dashed #ccc4c4; padding: 16px; text-align: center; color: #706768; border-radius: 8px;">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-bottom: 8px;">
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <circle cx="8.5" cy="8.5" r="1.5"></circle>
+            <polyline points="21 15 16 10 5 21"></polyline>
+          </svg><br>
+          <input [(ngModel)]="block.data.url" placeholder="Paste image URL here..." style="width: 80%; max-width: 400px; padding: 8px; border: 1px solid #ccc4c4; border-radius: 4px; margin-top: 8px;">
+        </div>
+        <div *ngIf="block.data.url" style="display:flex; flex-direction: column; align-items: center;">
+          <img [src]="block.data.url" style="max-width: 100%; max-height: 400px; border-radius: 8px; margin-bottom: 8px;">
+          <input *ngIf="!isLocked" [(ngModel)]="block.data.url" placeholder="Image URL" style="width: 100%; border:none; text-align:center; color:#706768; font-size:12px; background:transparent;">
+        </div>
+      </div>
+
+      <!-- FEATURE_GRID -->
+      <div *ngSwitchCase="'FEATURE_GRID'" class="pe-feature-grid">
+        <div class="pe-fg-header">
+          <input [(ngModel)]="block.data.title" class="pe-fg-title" placeholder="Section Title (e.g. Built for recurring collections)" [readonly]="isLocked">
+          <textarea [(ngModel)]="block.data.subtitle" class="pe-fg-subtitle" placeholder="Section description..." [readonly]="isLocked"></textarea>
+        </div>
+        <div class="pe-fg-cards">
+          <div class="pe-fg-card" *ngFor="let card of block.data.cards; let cIdx = index">
+            <button class="pe-btn-icon" (click)="removeCardFromBlock(block, cIdx)" style="position: absolute; right: 8px; top: 8px;" *ngIf="!isLocked" title="Remove card">
+              <svg width="12" height="12" viewBox="0 0 16 16" fill="none" stroke="#CE2027"><path d="M12 4L4 12M4 4L12 12" stroke-width="1.5" stroke-linecap="round"/></svg>
+            </button>
+            <input [(ngModel)]="card.title" class="pe-fg-card-title" placeholder="Card Title" [readonly]="isLocked">
+            <textarea [(ngModel)]="card.description" class="pe-fg-card-desc" placeholder="Card description..." [readonly]="isLocked"></textarea>
+          </div>
+          <button class="pe-btn-outline" style="align-self: stretch; min-height: 120px; display: flex; align-items: center; justify-content: center; flex: 1; min-width: 250px;" (click)="addCardToBlock(block)" *ngIf="!isLocked">+ Add Card</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADD BLOCK COMPONENT -->
+  <div class="pe-add-block" *ngIf="!isLocked" style="position:relative; margin-top: 32px;">
+    <div class="pe-divider" style="margin: 0; position:absolute; top: 50%; width: 100%; z-index: 1;"></div>
+    <div style="position:relative; z-index: 2; text-align: center;">
+      <button class="pe-btn-outline" (click)="toggleBlockPicker($event)" style="background:#fff; font-size: 14px; font-weight: 500; padding: 6px 12px; border-radius: 16px;">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-right: 4px; vertical-align: middle;">
+          <path d="M7 2V12M2 7H12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        Add block
+      </button>
+      
+      <div class="dropdown-menu" style="display:block; position:absolute; left: 50%; transform: translateX(-50%); top: 40px; min-width: 200px; text-align: left;" *ngIf="isBlockPickerOpen" (click)="$event.stopPropagation()">
+        <button class="dropdown-item" (click)="addBlock('PARAGRAPH')">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" style="margin-right:8px; vertical-align:middle;"><path d="M2 4h12M2 8h12M2 12h8" stroke-width="1.5"/></svg>
+          Rich text
+        </button>
+        <button class="dropdown-item" (click)="addBlock('FEATURE_GRID')">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" style="margin-right:8px; vertical-align:middle;">
+            <rect x="2" y="2" width="5" height="5" rx="1" stroke-width="1.5"/>
+            <rect x="9" y="2" width="5" height="5" rx="1" stroke-width="1.5"/>
+            <rect x="2" y="9" width="5" height="5" rx="1" stroke-width="1.5"/>
+            <rect x="9" y="9" width="5" height="5" rx="1" stroke-width="1.5"/>
+          </svg>
+          Feature Grid
+        </button>
+        <button class="dropdown-item" (click)="addBlock('HEADING')">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" style="margin-right:8px; vertical-align:middle;"><path d="M4 3v10M12 3v10M4 8h8" stroke-width="1.5"/></svg>
+          Heading
+        </button>
+        <button class="dropdown-item" (click)="addBlock('TABLE')">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" style="margin-right:8px; vertical-align:middle;"><rect x="2" y="3" width="12" height="10" rx="1" stroke-width="1.5"/><path d="M2 8h12M6 3v10" stroke-width="1.5"/></svg>
+          Table
+        </button>
+        <button class="dropdown-item" (click)="addBlock('IMAGE')">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" style="margin-right:8px; vertical-align:middle;"><rect x="2" y="3" width="12" height="10" rx="1" stroke-width="1.5"/><circle cx="5" cy="6" r="1.5"/><path d="M2 11l4-4 6 6" stroke-width="1.5"/></svg>
+          Image
+        </button>
+        <button class="dropdown-item" (click)="addBlock('NOTE_WARNING')">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" style="margin-right:8px; vertical-align:middle;"><circle cx="8" cy="8" r="6" stroke-width="1.5"/><path d="M8 5v4M8 11h.01" stroke-width="1.5" stroke-linecap="round"/></svg>
+          Note
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

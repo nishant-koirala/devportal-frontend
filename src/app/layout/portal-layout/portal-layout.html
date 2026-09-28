@@ -1,0 +1,54 @@
+<div class="portal-container">
+  
+  <!-- Top Header (Full Width) -->
+  <header class="top-header">
+    <div class="header-left">
+      <div class="logo-area">
+        <button class="sidebar-toggle" (click)="toggleSidebar()" style="background: none; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 8px; border-radius: 8px;">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M2.33331 3.5C2.33331 2.85567 2.85565 2.33333 3.49998 2.33333H12.5C13.1443 2.33333 13.6666 2.85567 13.6666 3.5V12.5C13.6666 13.1443 13.1443 13.6667 12.5 13.6667H3.49998C2.85565 13.6667 2.33331 13.1443 2.33331 12.5V3.5Z" stroke="#1A1415" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M6.33331 13.6667V2.33333" stroke="#1A1415" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <svg width="120" height="24" viewBox="0 0 120 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="margin-left: 12px;">
+          <rect x="12" y="4" width="12" height="12" transform="rotate(45 12 4)" fill="#CE2027"/>
+          <text x="28" y="17" fill="#1A1A1A" font-family="'Inter', sans-serif" font-weight="700" font-size="18" letter-spacing="-0.5">fonepay</text>
+        </svg>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="user-profile" (click)="logout()">
+        <div class="avatar">
+          <span class="material-symbols-outlined">person</span>
+        </div>
+        <div class="user-info">
+          <span class="user-name">{{ userName }}</span>
+          <span class="user-role">Super Admin</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="body-container">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" [class.collapsed]="isSidebarCollapsed">
+      <nav class="sidebar-nav">
+        @for (section of navSections; track section.title) {
+          <div class="nav-section">
+            <div class="nav-section-title">{{ section.title }}</div>
+            @for (item of section.items; track item.route) {
+              <a [routerLink]="item.route" class="nav-item" [class.active]="item.active">
+                {{ item.label }}
+              </a>
+            }
+          </div>
+        }
+      </nav>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <router-outlet></router-outlet>
+    </main>
+  </div>
+</div>

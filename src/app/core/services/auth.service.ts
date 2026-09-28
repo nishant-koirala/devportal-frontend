@@ -46,7 +46,9 @@ export class AuthService {
   }
 
   portalVerifyOtp(data: any) {
-    return this.http.post<any>(`${this.baseUrl}/portal/otp/verify`, data);
+    return this.http.post<any>(`${this.baseUrl}/portal/otp/verify`, data).pipe(
+      tap(res => this.handleAuthResponse(res))
+    );
   }
 
   getToken(): string | null {
@@ -60,10 +62,23 @@ export class AuthService {
     }
   }
 
+  getUserName(): string {
+    const token = this.getToken();
+    if (!token) return 'Admin';
+    try {
+      const parts = token.split('.');
+      if (parts.length !== 3) return 'Admin';
+      const payload = JSON.parse(atob(parts[1]));
+      return payload.fullName || payload.email || 'Admin';
+    } catch (e) {
+      return 'Admin';
+    }
+  }
+
   logout() {
     localStorage.removeItem('token');
     this.tokenSubject.next(null);
-    this.router.navigate(['/login']);
+    this.router.navigate(['/portal/login']);
   }
 }
 

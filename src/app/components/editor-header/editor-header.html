@@ -1,0 +1,37 @@
+<header class="editor-header">
+  <div class="breadcrumb-row">
+    <a routerLink="/portal/products" class="breadcrumb-link">Products</a>
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6 12L10 8L6 4" stroke="#52494A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span class="breadcrumb-current">{{ product?.name || 'Loading...' }}</span>
+  </div>
+  <div class="header-product-row">
+    <div class="header-title-area">
+      <h1 class="product-title">{{ product?.name || 'Loading...' }}</h1>
+      <ng-content select="[status-badge]"></ng-content>
+    </div>
+    
+    <!-- We can project extra buttons here if needed -->
+    <ng-content select="[actions]"></ng-content>
+
+    <div class="dropdown-container">
+      <button class="product-menu-btn" (click)="toggleProductMenu($event)" [class.active]="productMenuOpen">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8 8.66669C8.36819 8.66669 8.66667 8.36821 8.66667 8.00002C8.66667 7.63183 8.36819 7.33335 8 7.33335C7.63181 7.33335 7.33333 7.63183 7.33333 8.00002C7.33333 8.36821 7.63181 8.66669 8 8.66669Z" fill="#1A1415"/>
+          <path d="M12.6667 8.66669C13.0349 8.66669 13.3333 8.36821 13.3333 8.00002C13.3333 7.63183 13.0349 7.33335 12.6667 7.33335C12.2985 7.33335 12 7.63183 12 8.00002C12 8.36821 12.2985 8.66669 12.6667 8.66669Z" fill="#1A1415"/>
+          <path d="M3.33333 8.66669C3.70152 8.66669 4 8.36821 4 8.00002C4 7.63183 3.70152 7.33335 3.33333 7.33335C2.96514 7.33335 2.66667 7.63183 2.66667 8.00002C2.66667 8.36821 2.96514 8.66669 3.33333 8.66669Z" fill="#1A1415"/>
+        </svg>
+      </button>
+      <div class="dropdown-menu" *ngIf="productMenuOpen" (click)="$event.stopPropagation()">
+        <a class="dropdown-item" *ngIf="product" [routerLink]="['/portal/products', product.id, 'overview']">Overview page</a>
+        <a class="dropdown-item" *ngIf="product" [routerLink]="['/portal/products', product.id, 'guide']">Guides & Pages</a>
+        <a class="dropdown-item" *ngIf="product" [routerLink]="['/portal/products', product.id, 'settings']">Product settings</a>
+        <button class="dropdown-item">API Reference</button>
+        <div class="dropdown-space"></div>
+        <button class="dropdown-item">View on portal</button>
+      </div>
+    </div>
+  </div>
+  <div class="header-divider"></div>
+</header>
