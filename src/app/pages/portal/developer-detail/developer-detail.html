@@ -1,0 +1,111 @@
+<div class="main-content">
+  <div class="header">
+    <div class="header-left">
+      <div class="breadcrumb">
+        <a routerLink="/portal/developers" class="breadcrumb-link">Developers</a>
+        <span class="breadcrumb-separator">/</span>
+        <span class="breadcrumb-current">Priya Shrestha</span>
+      </div>
+      
+      <div class="title-row">
+        <h1 class="title">Priya Shrestha</h1>
+        <div class="badge badge-active">Active</div>
+      </div>
+    </div>
+    
+    <div class="header-actions">
+      <button class="btn btn-secondary" (click)="openDeactivateModal()">Deactivate</button>
+    </div>
+  </div>
+
+  <div class="details-card">
+    <h2 class="card-title">Profile</h2>
+    <div class="details-grid">
+      <div class="detail-item">
+        <div class="detail-label">Email</div>
+        <div class="detail-value">priya.shrestha@merchantco.com</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-label">Company</div>
+        <div class="detail-value">Merchant Co</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-label">Registered</div>
+        <div class="detail-value">22 June 2026</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-label">Last login</div>
+        <div class="detail-value">20 September 2026, 09:14</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-label">Selected products</div>
+        <div class="detail-value">Autopay by Fonepay, Checkout by Fonepay</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-label">Status</div>
+        <div class="detail-value">Active</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="activity-card">
+    <div class="activity-header">
+      <h2 class="card-title">Activity</h2>
+      <div class="filters-right">
+        <div class="dropdown-select-wrapper">
+          <select [(ngModel)]="selectedEventType">
+            <option value="All events">All events</option>
+          </select>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M7 10L12 15L17 10" stroke="#1A1415" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+
+        <div class="dropdown-select-wrapper w-160">
+          <select [(ngModel)]="selectedTimeframe">
+            <option value="Last 30 days">Last 30 days</option>
+          </select>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M7 10L12 15L17 10" stroke="#1A1415" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="activity-list">
+      <div class="activity-item" *ngFor="let event of events; let last = last" [class.last-item]="last">
+        <div class="activity-title">{{ event.title }}</div>
+        <div class="activity-time">{{ event.time }}</div>
+      </div>
+    </div>
+    
+    <div class="pagination">
+      <div class="pagination-info">Showing 1–9 of 47</div>
+      <div class="pagination-controls">
+        <button class="page-btn text-btn disabled">Previous</button>
+        <button class="page-btn active">1</button>
+        <button class="page-btn text-btn disabled">Next</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Deactivate Modal -->
+  <div class="modal-overlay" *ngIf="isDeactivateModalOpen" (click)="closeDeactivateModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2 class="modal-title">Deactivate Priya Shrestha?</h2>
+      </div>
+      
+      <div class="modal-body">
+        <p class="modal-helper-text">
+          Ends every active session immediately and signs her out of the portal. She cannot log in until reactivated, and receives no further announcement emails. This is recorded in the audit log.
+        </p>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeDeactivateModal()">Cancel</button>
+        <button class="btn btn-danger" (click)="confirmDeactivate()">Deactivate</button>
+      </div>
+    </div>
+  </div>
+</div>

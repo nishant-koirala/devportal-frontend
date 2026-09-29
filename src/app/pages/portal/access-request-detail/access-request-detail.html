@@ -1,0 +1,117 @@
+<div class="main-content">
+  <div class="header">
+    <div class="header-left">
+      <div class="breadcrumb">
+        <a routerLink="/portal/access" class="breadcrumb-link">Access requests</a>
+        <span class="breadcrumb-separator">/</span>
+        <span class="breadcrumb-current">Request details</span>
+      </div>
+      
+      <div class="title-row">
+        <h1 class="title">Access Request</h1>
+        <div class="badge badge-pending">Pending</div>
+      </div>
+    </div>
+    
+    <div class="header-actions">
+      <button class="btn btn-secondary" (click)="openDeclineModal()">Decline</button>
+      <button class="btn btn-primary" (click)="openGrantModal()">Grant access</button>
+    </div>
+  </div>
+
+  <div class="details-card">
+    <h2 class="card-title">Request details</h2>
+    <div class="details-grid">
+      <div class="detail-item">
+        <div class="detail-label">Developer</div>
+        <div class="detail-value">Priya Shrestha</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-label">Email</div>
+        <div class="detail-value">priya.shrestha@merchantco.com</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-label">Delivery email</div>
+        <div class="detail-value">priya.appleid@icloud.com</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-label">Company</div>
+        <div class="detail-value">Merchant Co</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-label">Asset</div>
+        <div class="detail-value">Fonepay App (iOS)</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-label">Access method</div>
+        <div class="detail-value">Store tester</div>
+      </div>
+      <div class="detail-item">
+        <div class="detail-label">Requested at</div>
+        <div class="detail-value">10 minutes ago</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Grant Modal -->
+  <div class="modal-overlay" *ngIf="isGrantModalOpen" (click)="closeGrantModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2 class="modal-title">Grant access to Fonepay App (iOS)</h2>
+      </div>
+      
+      <div class="modal-body">
+        <p class="modal-helper-text">
+          Priya Shrestha, priya.shrestha@merchantco.com (Merchant Co).
+        </p>
+        
+        <div class="form-group">
+          <label class="form-label">Delivery email</label>
+          <input type="text" class="form-control" value="priya.appleid@icloud.com" readonly>
+          <div class="input-helper">The email the developer asked us to use for this request. May differ from their account email.</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Instructions</label>
+          <textarea class="form-control" [(ngModel)]="grantInstructions" placeholder="e.g. You have been added as a tester on TestFlight. Accept the invite sent to this email, then install the app from TestFlight." rows="4"></textarea>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeGrantModal()">Cancel</button>
+        <button class="btn btn-primary" (click)="confirmGrant()">Grant access</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Decline Modal -->
+  <div class="modal-overlay" *ngIf="isDeclineModalOpen" (click)="closeDeclineModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2 class="modal-title">Decline Fonebiz by Fonepay (Android)</h2>
+      </div>
+      
+      <div class="modal-body">
+        <p class="modal-helper-text">
+          Bibek Rana, bibek@paylink.com.np (PayLink Pvt Ltd) can request again once this is addressed.
+        </p>
+        
+        <div class="form-group">
+          <label class="form-label">Delivery email</label>
+          <input type="text" class="form-control" value="bibek.playconsole@gmail.com" readonly>
+          <div class="input-helper">The email the developer asked us to use for this request. May differ from their account email.</div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Reason</label>
+          <textarea class="form-control" [(ngModel)]="declineReason" placeholder="e.g. The repository invite needs a GitHub username, not an email address. Ask the developer to resubmit with their username." rows="4"></textarea>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeDeclineModal()">Cancel</button>
+        <button class="btn btn-danger" [disabled]="!declineReason" (click)="confirmDecline()">Decline</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,55 @@
+<div class="main-content">
+  <div class="header">
+    <div class="header-left">
+      <div class="breadcrumb">
+        <a routerLink="/portal/config" class="breadcrumb-link">Config</a>
+        <span class="breadcrumb-separator">/</span>
+        <span class="breadcrumb-current">Edit</span>
+      </div>
+      
+      <div class="title-row">
+        <h1 class="title">Edit {{ configName | lowercase }}</h1>
+      </div>
+    </div>
+    
+    <div class="header-actions">
+      <button class="btn btn-secondary" (click)="goBack()">Cancel</button>
+      <button class="btn btn-primary" (click)="openConfirmSaveModal()">Save</button>
+    </div>
+  </div>
+
+  <div class="edit-card">
+    <div class="form-group">
+      <label class="form-label">Name</label>
+      <input type="text" class="form-control" [(ngModel)]="configName">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Value</label>
+      <input type="text" class="form-control" [(ngModel)]="configValue">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Description</label>
+      <textarea class="form-control" rows="3" [(ngModel)]="configDescription"></textarea>
+    </div>
+  </div>
+
+  <!-- Confirm save modal -->
+  <div class="modal-overlay" *ngIf="isConfirmSaveModalOpen" (click)="closeConfirmSaveModal()">
+    <div class="modal-content confirm-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2 class="modal-title">Save changes?</h2>
+      </div>
+      
+      <div class="modal-body">
+        <p class="modal-helper-text">
+          This changes {{ configName | lowercase }} from <span class="highlight">{{ originalValue }}</span> to <span class="highlight">{{ configValue }}</span>. Applies immediately and is recorded in the audit log.
+        </p>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeConfirmSaveModal()">Cancel</button>
+        <button class="btn btn-primary" (click)="confirmSave()">Save</button>
+      </div>
+    </div>
+  </div>
+</div>

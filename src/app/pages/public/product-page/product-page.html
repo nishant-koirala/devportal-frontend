@@ -4,22 +4,21 @@
   </div>
 </ng-container>
 
-<ng-container *ngIf="!loading && !product">
+<ng-container *ngIf="!loading && !pageData">
   <div class="page-content" style="text-align: center; padding: 100px 24px;">
-    <h2>Product not found</h2>
-    <p style="color: #706768; margin-top: 16px;">The product you are trying to view does not exist or you do not have permission to view it.</p>
-    <a routerLink="/portal/products" style="display: inline-block; margin-top: 24px; color: #142e55; text-decoration: underline;">Back to Products</a>
+    <h2>Page not found</h2>
+    <p style="color: #706768; margin-top: 16px;">The page you are trying to view does not exist or you do not have permission to view it.</p>
+    <a [routerLink]="['/products', productSlug]" style="display: inline-block; margin-top: 24px; color: #142e55; text-decoration: underline;">Back to Product</a>
   </div>
 </ng-container>
 
-<ng-container *ngIf="!loading && product">
-  <app-page-hero
-    [breadcrumb]="'Products > ' + product.name"
-    [title]="product.name"
-    [description]="product.shortDescription"
-    primaryActionLabel="Read the docs"
-    secondaryActionLabel="API Reference"
-  ></app-page-hero>
+<ng-container *ngIf="!loading && pageData">
+  <div style="background: #f7f5f5; padding: 40px 24px; text-align: center;">
+    <h1 style="font-size: 32px; font-weight: 700; color: #1a1415;">{{ pageData.title }}</h1>
+    <div style="font-size: 14px; color: #706768; margin-top: 16px;">
+      Products &gt; {{ productSlug }} &gt; {{ pageData.title }}
+    </div>
+  </div>
 
   <div class="page-content">
     <div class="pe-content" style="max-width: 800px; margin: 0 auto; padding: 48px 24px;">
@@ -83,14 +82,5 @@
 
       </ng-container>
     </div>
-
-    <!-- Closing CTA -->
-    <section class="section">
-      <app-account-cta-banner
-        title="Ready to automate collections?"
-        description="Create a sandbox account to test the Autopay flow with dummy credentials."
-        actionLabel="Create sandbox account"
-      ></app-account-cta-banner>
-    </section>
   </div>
 </ng-container>

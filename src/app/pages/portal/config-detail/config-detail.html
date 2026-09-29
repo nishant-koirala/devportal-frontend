@@ -1,0 +1,26 @@
+<div class="main-content">
+  <div class="header">
+    <div class="header-left">
+      <div class="breadcrumb">
+        <a routerLink="/portal/config" class="breadcrumb-link">Config</a>
+        <span class="breadcrumb-separator">/</span>
+        <span class="breadcrumb-current">{{ configName }}</span>
+      </div>
+      
+      <div class="title-row">
+        <h1 class="title">{{ configName }}</h1>
+      </div>
+      
+      <p class="description">{{ configDescription }}</p>
+    </div>
+    
+    <div class="header-actions">
+      <button class="btn btn-secondary" (click)="goToEdit()">Edit</button>
+    </div>
+  </div>
+
+  <div class="details-card">
+    <h2 class="card-title">Current value</h2>
+    <div class="detail-value">{{ configValue }}</div>
+  </div>
+</div>

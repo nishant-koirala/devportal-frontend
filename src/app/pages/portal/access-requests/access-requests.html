@@ -1,0 +1,103 @@
+<div class="main-content" (click)="closeMenu()">
+  <div class="header">
+    <h1 class="title">Access requests</h1>
+  </div>
+
+  <ng-container *ngIf="hasRequests; else emptyState">
+    <div class="filters-container">
+      <div class="search-input-wrapper">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M14.77 13.27L19.49 18L18 19.49L13.27 14.77C11.9754 15.7958 10.3705 16.3314 8.68333 16.3333C4.44976 16.3333 1.01666 12.9002 1.01666 8.66666C1.01666 4.43309 4.44976 1 8.68333 1C12.9169 1 16.35 4.43309 16.35 8.66666C16.3503 10.3712 15.8016 11.993 14.77 13.27ZM12.7233 12.44C13.7915 11.4191 14.3756 10.0637 14.35 8.66666C14.35 5.53583 11.8142 3 8.68333 3C5.5525 3 3.01666 5.53583 3.01666 8.66666C3.01666 11.7975 5.5525 14.3333 8.68333 14.3333C10.0763 14.3582 11.4239 13.7885 12.44 12.7233L12.7233 12.44Z" fill="#52494A"/>
+        </svg>
+        <input type="text" placeholder="Search access requests" [(ngModel)]="searchTerm">
+      </div>
+      
+      <div class="filters-right">
+        <div class="dropdown-select-wrapper">
+          <select [(ngModel)]="selectedStatus">
+            <option value="All statuses">All statuses</option>
+            <option value="Pending">Pending</option>
+            <option value="Granted">Granted</option>
+            <option value="Declined">Declined</option>
+          </select>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M7 10L12 15L17 10" stroke="#1A1415" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+
+        <div class="dropdown-select-wrapper w-160">
+          <select [(ngModel)]="selectedAsset">
+            <option value="All assets">All assets</option>
+            <option value="Fonepay App (iOS)">Fonepay App (iOS)</option>
+            <option value="Fonebiz by Fonepay (Android)">Fonebiz by Fonepay (Android)</option>
+            <option value="Fonebiz">Fonebiz</option>
+            <option value="Fonepay App (Android)">Fonepay App (Android)</option>
+          </select>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M7 10L12 15L17 10" stroke="#1A1415" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="table-container" *ngIf="filteredRequests.length > 0">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Developer</th>
+            <th>Company</th>
+            <th>Asset</th>
+            <th>Requested at</th>
+            <th>Status</th>
+            <th class="action-th"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let req of filteredRequests" (click)="goToRequest(req.id)" class="clickable-row">
+            <td class="developer-cell">
+              <div class="dev-name">{{ req.developerName }} <span class="dev-email">&bull; {{ req.developerEmail }}</span></div>
+            </td>
+            <td>{{ req.company }}</td>
+            <td>{{ req.asset }}</td>
+            <td>{{ req.requestedAt }}</td>
+            <td>
+              <span class="status-text" [ngClass]="{
+                'status-pending': req.status === 'Pending',
+                'status-granted': req.status === 'Granted',
+                'status-declined': req.status === 'Declined'
+              }">{{ req.status }}</span>
+            </td>
+            <td class="action-cell">
+              <button class="icon-btn" (click)="toggleMenu(req.id, $event)">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="12" cy="6" r="1.5" fill="#1A1415"/>
+                  <circle cx="12" cy="12" r="1.5" fill="#1A1415"/>
+                  <circle cx="12" cy="18" r="1.5" fill="#1A1415"/>
+                </svg>
+              </button>
+              <div class="dropdown-menu" *ngIf="activeMenuId === req.id" (click)="$event.stopPropagation()">
+                <div class="dropdown-item" (click)="goToRequest(req.id)">Review</div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <div class="pagination" *ngIf="filteredRequests.length > 0">
+      <div class="pagination-info">Showing 1–{{ filteredRequests.length }} of {{ filteredRequests.length }}</div>
+      <div class="pagination-controls">
+        <button class="page-btn text-btn disabled">Previous</button>
+        <button class="page-btn active">1</button>
+        <button class="page-btn text-btn disabled">Next</button>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-template #emptyState>
+    <div class="empty-state">
+      <div class="empty-title">No access requests</div>
+      <p class="empty-desc">When developers request access to assets, they will appear here.</p>
+    </div>
+  </ng-template>
+</div>

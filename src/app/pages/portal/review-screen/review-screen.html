@@ -1,0 +1,58 @@
+<div class="main-content">
+  <div class="header">
+    <div class="header-left">
+      <div class="breadcrumb">
+        <a routerLink="/portal/reviews" class="breadcrumb-link">Review queue</a>
+        <span class="breadcrumb-separator">/</span>
+        <span class="breadcrumb-current">How Autopay works</span>
+      </div>
+      
+      <div class="title-row">
+        <h1 class="title">How Autopay works</h1>
+        <div class="badge badge-status">Published &bull; Pending review</div>
+        <div class="badge badge-edit">Edit</div>
+      </div>
+    </div>
+    
+    <div class="header-actions">
+      <button class="btn btn-secondary" (click)="openRejectModal()">Reject</button>
+      <button class="btn btn-primary" (click)="approve()">Approve</button>
+    </div>
+  </div>
+
+  <div class="review-notice">
+    <div class="notice-title">Submitted for review</div>
+    <div class="notice-desc">Submitted by Priya Shrestha, 20 minutes ago. Autopay by Fonepay / Introduction.</div>
+  </div>
+
+  <div class="content-preview">
+    <p>Autopay by Fonepay splits the integration into two flows that share one bearer token and one encryption envelope.</p>
+    <h2>Consent flow</h2>
+    <p>You ask the Account Aggregator (AA) to create a consent for a specific customer, identified by their 10-digit mobile number and your own stable serviceId for that customer. The AA returns a consentId. Your app then opens the customer's bank app through the bank's intentScheme, where the customer reviews the mandate terms and approves. There is no push notification for the approval: you poll Consent Status until the consent appears as authorized.</p>
+  </div>
+
+  <!-- Reject Modal -->
+  <div class="modal-overlay" *ngIf="isRejectModalOpen" (click)="closeRejectModal()">
+    <div class="modal-content reject-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2 class="modal-title">Reject "How Autopay works"</h2>
+      </div>
+      
+      <div class="modal-body">
+        <p class="modal-helper-text">
+          This sends the page back to Priya Shrestha as a draft. A comment is required so she knows what to change.
+        </p>
+        
+        <div class="form-group">
+          <label class="form-label">Comment</label>
+          <textarea class="form-control" [(ngModel)]="rejectComment" placeholder="e.g. The response section is missing the error codes table." rows="4"></textarea>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeRejectModal()">Cancel</button>
+        <button class="btn btn-danger" [disabled]="!rejectComment" (click)="confirmReject()">Reject</button>
+      </div>
+    </div>
+  </div>
+</div>

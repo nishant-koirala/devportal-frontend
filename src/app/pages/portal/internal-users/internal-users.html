@@ -1,0 +1,141 @@
+<div class="main-content" (click)="closeMenu()">
+  <div class="header">
+    <h1 class="title">Internal users</h1>
+    <button class="btn btn-primary" (click)="openInviteModal()">
+      <span>Invite user</span>
+    </button>
+  </div>
+
+  <div class="filters-container">
+    <div class="search-input-wrapper">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.77 13.27L19.49 18L18 19.49L13.27 14.77C11.9754 15.7958 10.3705 16.3314 8.68333 16.3333C4.44976 16.3333 1.01666 12.9002 1.01666 8.66666C1.01666 4.43309 4.44976 1 8.68333 1C12.9169 1 16.35 4.43309 16.35 8.66666C16.3503 10.3712 15.8016 11.993 14.77 13.27ZM12.7233 12.44C13.7915 11.4191 14.3756 10.0637 14.35 8.66666C14.35 5.53583 11.8142 3 8.68333 3C5.5525 3 3.01666 5.53583 3.01666 8.66666C3.01666 11.7975 5.5525 14.3333 8.68333 14.3333C10.0763 14.3582 11.4239 13.7885 12.44 12.7233L12.7233 12.44Z" fill="#52494A"/>
+      </svg>
+      <input type="text" placeholder="Search internal users" [(ngModel)]="searchTerm">
+    </div>
+    
+    <div class="dropdown-select-wrapper">
+      <select [(ngModel)]="selectedProfile">
+        <option value="All profiles">All profiles</option>
+        <option value="Super Admin">Super Admin</option>
+        <option value="CMS Admin">CMS Admin</option>
+        <option value="Approver">Approver</option>
+        <option value="Editor">Editor</option>
+      </select>
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M7 10L12 15L17 10" stroke="#1A1415" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="table-container" *ngIf="filteredUsers.length > 0">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Role profile</th>
+          <th>Status</th>
+          <th class="action-th"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of filteredUsers">
+          <td class="name-cell">{{ item.name }}</td>
+          <td>{{ item.email }}</td>
+          <td>{{ item.roleProfile }}</td>
+          <td>
+            <span class="status-badge" 
+                  [class.status-active]="item.status === 'Active'"
+                  [class.status-invited]="item.status === 'Invited'"
+                  [class.status-deactivated]="item.status === 'Deactivated'">
+              {{ item.status }}
+            </span>
+          </td>
+          <td class="action-cell">
+            <button class="icon-btn" (click)="toggleMenu(item.id, $event)">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="6" r="1.5" fill="#1A1415"/>
+                <circle cx="12" cy="12" r="1.5" fill="#1A1415"/>
+                <circle cx="12" cy="18" r="1.5" fill="#1A1415"/>
+              </svg>
+            </button>
+            <div class="dropdown-menu" *ngIf="activeMenuId === item.id" (click)="$event.stopPropagation()">
+              <div class="dropdown-item">Edit role</div>
+              <div class="dropdown-item" *ngIf="item.status === 'Active'">Deactivate</div>
+              <div class="dropdown-item" *ngIf="item.status === 'Deactivated'">Reactivate</div>
+              <div class="dropdown-item" *ngIf="item.status === 'Invited'" (click)="openRevokeModal(item)">Revoke invitation</div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  
+  <div class="pagination" *ngIf="filteredUsers.length > 0">
+    <div class="pagination-info">Showing 1–{{ filteredUsers.length }} of {{ filteredUsers.length }}</div>
+    <div class="pagination-controls">
+      <button class="page-btn text-btn disabled">Previous</button>
+      <button class="page-btn active">1</button>
+      <button class="page-btn text-btn disabled">Next</button>
+    </div>
+  </div>
+
+  <!-- Invite dialog modal -->
+  <div class="modal-overlay" *ngIf="isInviteModalOpen" (click)="closeInviteModal()">
+    <div class="modal-content invite-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2 class="modal-title">Invite user</h2>
+      </div>
+      
+      <div class="modal-body">
+        <p class="modal-helper-text">
+          Sends a single-use invitation link. It expires in 48 hours and lets them set their name and password.
+        </p>
+        <div class="form-group">
+          <label class="form-label">Email</label>
+          <input type="text" class="form-control" [(ngModel)]="newInviteEmail" placeholder="name@fonepay.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Role profile</label>
+          <div class="dropdown-select-wrapper w-full">
+            <select [(ngModel)]="newInviteRole">
+              <option value="Super Admin">Super Admin</option>
+              <option value="CMS Admin">CMS Admin</option>
+              <option value="Approver">Approver</option>
+              <option value="Editor">Editor</option>
+            </select>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M7 10L12 15L17 10" stroke="#1A1415" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeInviteModal()">Cancel</button>
+        <button class="btn btn-primary" (click)="sendInvitation()">Send invitation</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Revoke confirmation modal -->
+  <div class="modal-overlay" *ngIf="isRevokeModalOpen" (click)="closeRevokeModal()">
+    <div class="modal-content revoke-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2 class="modal-title">Revoke {{ userToRevoke?.name }}'s invitation?</h2>
+      </div>
+      
+      <div class="modal-body">
+        <p class="modal-helper-text">
+          No password has been set yet, so this deletes the invited record entirely rather than deactivating it. She can be invited again with a new link.
+        </p>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeRevokeModal()">Cancel</button>
+        <button class="btn btn-danger" (click)="confirmRevoke()">Revoke</button>
+      </div>
+    </div>
+  </div>
+</div>

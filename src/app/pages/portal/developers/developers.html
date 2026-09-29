@@ -1,0 +1,127 @@
+<div class="main-content" (click)="closeMenu()">
+  <div class="header">
+    <div class="header-left">
+      <h1 class="title">Developers</h1>
+      <button class="btn btn-secondary" (click)="goToInternalDevelopers()">Internal developers</button>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-value">1,248</div>
+      <div class="stat-label">Total registered</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">1,102</div>
+      <div class="stat-label">Verified</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">486</div>
+      <div class="stat-label">Active in the last 30 days</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value">312</div>
+      <div class="stat-label">Downloads in the last 30 days</div>
+    </div>
+  </div>
+
+  <div class="filters-container">
+    <div class="search-input-wrapper">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M14.77 13.27L19.49 18L18 19.49L13.27 14.77C11.9754 15.7958 10.3705 16.3314 8.68333 16.3333C4.44976 16.3333 1.01666 12.9002 1.01666 8.66666C1.01666 4.43309 4.44976 1 8.68333 1C12.9169 1 16.35 4.43309 16.35 8.66666C16.3503 10.3712 15.8016 11.993 14.77 13.27ZM12.7233 12.44C13.7915 11.4191 14.3756 10.0637 14.35 8.66666C14.35 5.53583 11.8142 3 8.68333 3C5.5525 3 3.01666 5.53583 3.01666 8.66666C3.01666 11.7975 5.5525 14.3333 8.68333 14.3333C10.0763 14.3582 11.4239 13.7885 12.44 12.7233L12.7233 12.44Z" fill="#52494A"/>
+      </svg>
+      <input type="text" placeholder="Search developers" [(ngModel)]="searchTerm">
+    </div>
+    
+    <div class="filters-right">
+      <div class="dropdown-select-wrapper">
+        <select [(ngModel)]="selectedStatus">
+          <option value="All statuses">All statuses</option>
+          <option value="Active">Active</option>
+          <option value="Unverified">Unverified</option>
+          <option value="Deactivated">Deactivated</option>
+        </select>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M7 10L12 15L17 10" stroke="#1A1415" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <div class="dropdown-select-wrapper w-160">
+        <select [(ngModel)]="selectedProduct">
+          <option value="All products">All products</option>
+          <option value="Autopay">Autopay</option>
+          <option value="Checkout">Checkout</option>
+          <option value="Fonepay QR">Fonepay QR</option>
+        </select>
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M7 10L12 15L17 10" stroke="#1A1415" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <button class="btn btn-secondary">Export CSV</button>
+    </div>
+  </div>
+
+  <ng-container *ngIf="filteredDevelopers.length > 0; else emptyState">
+    <div class="table-container">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Developer</th>
+            <th>Company</th>
+            <th>Products</th>
+            <th>Registered / last login</th>
+            <th>Status</th>
+            <th class="action-th"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let dev of filteredDevelopers" (click)="goToDeveloper(dev.id)" class="clickable-row">
+            <td class="developer-cell">
+              <div class="dev-name">{{ dev.name }}</div>
+              <div class="dev-email">{{ dev.email }}</div>
+            </td>
+            <td>{{ dev.company }}</td>
+            <td>{{ dev.products }}</td>
+            <td>{{ dev.registered }}</td>
+            <td>
+              <span class="status-text" [ngClass]="{
+                'status-active': dev.status === 'Active',
+                'status-unverified': dev.status === 'Unverified',
+                'status-deactivated': dev.status === 'Deactivated'
+              }">{{ dev.status }}</span>
+            </td>
+            <td class="action-cell">
+              <button class="icon-btn" (click)="toggleMenu(dev.id, $event)">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="12" cy="6" r="1.5" fill="#1A1415"/>
+                  <circle cx="12" cy="12" r="1.5" fill="#1A1415"/>
+                  <circle cx="12" cy="18" r="1.5" fill="#1A1415"/>
+                </svg>
+              </button>
+              <div class="dropdown-menu" *ngIf="activeMenuId === dev.id" (click)="$event.stopPropagation()">
+                <div class="dropdown-item" (click)="goToDeveloper(dev.id)">View profile</div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    
+    <div class="pagination">
+      <div class="pagination-info">Showing 1–{{ filteredDevelopers.length }} of 1,248</div>
+      <div class="pagination-controls">
+        <button class="page-btn text-btn disabled">Previous</button>
+        <button class="page-btn active">1</button>
+        <button class="page-btn text-btn disabled">Next</button>
+      </div>
+    </div>
+  </ng-container>
+
+  <ng-template #emptyState>
+    <div class="empty-state">
+      <div class="empty-title">No developers found</div>
+      <p class="empty-desc">Try adjusting your filters or search term to find what you're looking for.</p>
+    </div>
+  </ng-template>
+</div>
