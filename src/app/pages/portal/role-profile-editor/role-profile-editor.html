@@ -1,0 +1,38 @@
+<div class="main-content">
+  <div class="header">
+    <h1 class="title">{{ isViewMode ? 'Role profile' : (isEditMode ? 'Edit role profile' : 'New role profile') }}</h1>
+    <button class="btn btn-primary" *ngIf="!isViewMode" (click)="save()">
+      <span>Save changes</span>
+    </button>
+  </div>
+
+  <div class="form-container">
+    <div class="form-group">
+      <label class="form-label">Name</label>
+      <input type="text" class="form-control" [(ngModel)]="profileName" placeholder="e.g. CMS Admin" [disabled]="isViewMode">
+    </div>
+    
+    <div class="form-group">
+      <label class="form-label">Description</label>
+      <textarea class="form-control" [(ngModel)]="profileDescription" rows="2" placeholder="Briefly describe the role's purpose..." [disabled]="isViewMode"></textarea>
+    </div>
+
+    <div class="permissions-container">
+      <div class="permission-group" *ngFor="let group of permissionGroups">
+        <h3 class="group-title">{{ group.name }}</h3>
+        <div class="permission-list">
+          <div class="permission-item" *ngFor="let item of group.items">
+            <label class="checkbox-container" [class.disabled]="isViewMode">
+              <input type="checkbox" [(ngModel)]="item.checked" [disabled]="isViewMode">
+              <span class="checkmark"></span>
+              <div class="permission-text">
+                <div class="permission-label">{{ item.label }}</div>
+                <div class="permission-desc">{{ item.description }}</div>
+              </div>
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

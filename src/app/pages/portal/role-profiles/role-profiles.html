@@ -1,0 +1,64 @@
+<div class="main-content">
+  <div class="header">
+    <h1 class="title">Role profiles</h1>
+    <button class="btn btn-primary" (click)="createRole()">
+      <span>New role profile</span>
+    </button>
+  </div>
+
+  <div class="table-container">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th style="width: 140px;">Created date</th>
+          <th style="width: 170px;">Created by</th>
+          <th style="width: 140px;">Modified date</th>
+          <th style="width: 170px;">Modified by</th>
+          <th style="width: 64px;"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let role of roles">
+          <td class="name-col">{{ role.name }}</td>
+          <td>{{ role.createdDate }}</td>
+          <td>{{ role.createdBy }}</td>
+          <td>{{ role.modifiedDate }}</td>
+          <td>{{ role.modifiedBy }}</td>
+          <td class="action-cell">
+            <button class="icon-btn" (click)="toggleDropdown(role.id, $event)">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 8C4 8.55228 3.55228 9 3 9C2.44772 9 2 8.55228 2 8C2 7.44772 2.44772 7 3 7C3.55228 7 4 7.44772 4 8Z" fill="#1A1415"/>
+                <path d="M9 8C9 8.55228 8.55228 9 8 9C7.44772 9 7 8.55228 7 8C7 7.44772 7.44772 7 8 7C8.55228 7 9 7.44772 9 8Z" fill="#1A1415"/>
+                <path d="M14 8C14 8.55228 13.5523 9 13 9C12.4477 9 12 8.55228 12 8C12 7.44772 12.4477 7 13 7C13.5523 7 14 7.44772 14 8Z" fill="#1A1415"/>
+              </svg>
+            </button>
+            <div class="dropdown-menu" *ngIf="activeDropdownId === role.id">
+              <ng-container *ngIf="role.isBuiltIn">
+                <div class="dropdown-item" (click)="viewRole(role.id, $event)">View</div>
+              </ng-container>
+              <ng-container *ngIf="!role.isBuiltIn">
+                <div class="dropdown-item" (click)="viewRole(role.id, $event)">View</div>
+                <div class="dropdown-item" (click)="editRole(role.id, $event)">Edit</div>
+                <div class="dropdown-item" (click)="openDeleteModal(role, $event)">Delete</div>
+              </ng-container>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Delete Modal -->
+  <div class="modal-overlay" *ngIf="isDeleteModalOpen" (click)="closeDeleteModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <h2 class="modal-title">Delete {{ roleToDelete?.name }}?</h2>
+      <p class="modal-text">No internal user holds this profile, so nothing is reassigned. This cannot be undone.</p>
+      
+      <div class="modal-actions">
+        <button class="btn btn-secondary" (click)="closeDeleteModal()">Cancel</button>
+        <button class="btn btn-danger" (click)="confirmDelete()">Delete</button>
+      </div>
+    </div>
+  </div>
+</div>
