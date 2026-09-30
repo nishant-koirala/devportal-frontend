@@ -31,7 +31,7 @@ interface Block {
 
 @Component({
   selector: 'app-product-overview',
-  imports: [CommonModule, RouterModule, PageHero, AccountCtaBanner],
+  imports: [CommonModule, RouterModule, PageHero, AccountCtaBanner, BlockRenderer],
   templateUrl: './product-overview.html',
   styleUrl: './product-overview.css'
 })

@@ -360,3 +360,4 @@ a {
 }
 .page-btn.active, .page-num.active { background-color: var(--color-primary, #CE2027); color: #FFF; }
 .page-btn:disabled, .page-nav:disabled { opacity: 0.5; cursor: not-allowed; }
+
