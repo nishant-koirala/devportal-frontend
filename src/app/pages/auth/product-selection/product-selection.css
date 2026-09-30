@@ -87,17 +87,3 @@
 .skip-link:hover {
   color: var(--color-text-dark);
 }
-.btn-primary {
-  padding: 12px 32px;
-  background-color: var(--color-primary);
-  color: white;
-  border: none;
-  border-radius: 8px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-.btn-primary:hover {
-  background-color: #a6181e;
-}

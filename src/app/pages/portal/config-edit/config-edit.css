@@ -3,13 +3,6 @@
   height: 100%;
 }
 
-.main-content {
-  padding: 40px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
 .header {
   display: flex;
   justify-content: space-between;
@@ -66,38 +59,6 @@
   gap: 12px;
 }
 
-.btn-secondary {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 12px 24px;
-  height: 48px;
-  background: transparent;
-  border: 1px solid #ccc4c4;
-  border-radius: 8px;
-  cursor: pointer;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 500;
-  font-size: 14px;
-  color: #1a1415;
-}
-
-.btn-primary {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 12px 24px;
-  height: 48px;
-  background: #ce2027;
-  border: 1px solid #ce2027;
-  border-radius: 8px;
-  cursor: pointer;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 500;
-  font-size: 14px;
-  color: #faf0f0;
-}
-
 .edit-card {
   background: #ffffff;
   border: 1px solid #ccc4c4;
@@ -109,12 +70,6 @@
   max-width: 800px;
 }
 
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
 .form-label {
   font-family: 'Poppins', sans-serif;
   font-weight: 500;
@@ -122,58 +77,12 @@
   color: #1a1415;
 }
 
-.form-control {
-  padding: 12px 16px;
-  background: #ffffff;
-  border: 1px solid #ccc4c4;
-  border-radius: 8px;
-  font-family: 'Poppins', sans-serif;
-  font-size: 14px;
-  color: #1a1415;
-  outline: none;
-  width: 100%;
-  box-sizing: border-box;
-}
-
-textarea.form-control {
-  resize: vertical;
-}
-
-.form-control:focus {
-  border-color: #ce2027;
-}
+textarea
 
 /* Modals */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(26, 20, 21, 0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 100;
-}
-
-.modal-content {
-  background: #ffffff;
-  border-radius: 16px;
-  padding: 16px;
-  width: 100%;
-  box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.15);
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
 
 .confirm-modal {
   max-width: 400px;
-}
-
-.modal-header {
-  padding: 16px;
 }
 
 .modal-title {
@@ -182,13 +91,6 @@ textarea.form-control {
   font-size: 24px;
   color: #1a1415;
   margin: 0;
-}
-
-.modal-body {
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
 }
 
 .modal-helper-text {
@@ -202,11 +104,4 @@ textarea.form-control {
 .highlight {
   font-weight: 600;
   color: #1a1415;
-}
-
-.modal-footer {
-  padding: 16px;
-  display: flex;
-  justify-content: flex-end;
-  gap: 12px;
 }
