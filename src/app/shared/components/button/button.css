@@ -17,10 +17,18 @@
   cursor: not-allowed;
 }
 
+.btn-primary {
+  background-color: var(--color-primary);
+  color: white;
+}
 .btn-primary:hover:not(:disabled) {
   background-color: #a6181e;
 }
 
+.btn-secondary {
+  background-color: #f2f2f2;
+  color: var(--color-text-dark);
+}
 .btn-secondary:hover:not(:disabled) {
   background-color: #e6e6e6;
 }

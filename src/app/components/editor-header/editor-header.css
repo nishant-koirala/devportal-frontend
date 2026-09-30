@@ -70,6 +70,33 @@
 
 .product-menu-btn:hover, .product-menu-btn.active { background-color: #ecd9da; }
 
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 8px 0;
+  z-index: 100;
+  min-width: 180px;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 8px 16px;
+  border: none;
+  background: none;
+  text-align: left;
+  font-size: 14px;
+  color: #1a1415;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.dropdown-item:hover { background-color: #f5edee; }
 .dropdown-space {
   height: 8px;
 }

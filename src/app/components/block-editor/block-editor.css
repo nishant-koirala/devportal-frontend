@@ -117,6 +117,14 @@
    MAIN CONTENT: Panes
    Figma: Panes - HORIZONTAL gap=24, no padding
    ============================================================ */
+.main-content {
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+  padding: 24px 40px 40px 40px;
+  flex: 1;
+  align-items: flex-start;
+}
 
 /* ============================================================
    SIDEBAR (Page tree)
@@ -909,6 +917,34 @@
 /* ============================================================
    MODAL
    ============================================================ */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(26, 20, 21, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 32px;
+  width: 480px;
+  max-width: 90vw;
+  box-shadow: 0 20px 60px rgba(26, 20, 21, 0.15);
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
 
 .modal-header h2 {
   font-size: 20px;
@@ -916,6 +952,21 @@
   color: #1a1415;
   margin: 0;
 }
+
+.close-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-radius: 6px;
+  color: #706768;
+}
+
+.close-btn:hover { background-color: #f5edee; }
 
 .form-group label {
   display: block;
@@ -925,12 +976,45 @@
   margin-bottom: 6px;
 }
 
+.form-control {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #ccc4c4;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #1a1415;
+  font-family: 'Poppins', sans-serif;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.form-control:focus {
+  border-color: #ce2027;
+  box-shadow: 0 0 0 3px rgba(206, 32, 39, 0.1);
+}
+
 /* ============================================================
    DROPDOWN MENUS
    ============================================================ */
 .dropdown-container {
   position: relative;
   display: inline-block;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+  background-color: #ffffff;
+  border: 1px solid #ccc4c4;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(26, 20, 21, 0.1);
+  min-width: 200px;
+  padding: 8px 0;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Left-aligned dropdown for Section menu */
@@ -942,6 +1026,25 @@
 /* Custom alignment for Page menu if needed */
 .page-dropdown {
   right: 0;
+}
+
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 8px 16px;
+  background: none;
+  border: none;
+  font-size: 14px;
+  font-weight: 400;
+  color: #1a1415;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.15s;
+}
+
+.dropdown-item:hover {
+  background-color: #f9f5f5;
 }
 
 .dropdown-divider {

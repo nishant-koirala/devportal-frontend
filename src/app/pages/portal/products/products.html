@@ -1,7 +1,7 @@
 <div class="page-container">
   
   <header class="page-header">
-    <h1 class="page-title">products()</h1>
+    <h1 class="page-title">Products</h1>
     <button class="btn-primary" (click)="openModal()">
       New product
     </button>
@@ -9,7 +9,7 @@
 
   <div class="table-card">
     @if (loading()) {
-      <div style="padding: 40px; text-align: center; color: #888;">loading() products()...</div>
+      <div style="padding: 40px; text-align: center; color: #888;">Loading products...</div>
     } @else if (error()) {
       <div style="padding: 40px; text-align: center; color: #CE2027;">{{ error() }}</div>
     } @else {
@@ -28,7 +28,7 @@
             <tr [class.row-active]="activeMenuId() === product.id">
               <td>{{ product.displayOrder ?? (i + 1) }}</td>
               <td>
-                <a class="product-name" [routerLink]="['/portal/products()', product.id, 'guide']" style="cursor: pointer;">{{ product.name }}</a>
+                <a class="product-name" [routerLink]="['/portal/products', product.id, 'guide']" style="cursor: pointer;">{{ product.name }}</a>
               </td>
               <td>0</td>
               <td>
@@ -50,8 +50,8 @@
 
                 @if (activeMenuId() === product.id) {
                   <div class="action-menu" (click)="$event.stopPropagation()">
-                    <a class="action-item" [routerLink]="['/portal/products()', product.id, 'settings']">Product settings</a>
-                    <a class="action-item" [routerLink]="['/portal/products()', product.id, 'guide']">Guides & Pages</a>
+                    <a class="action-item" [routerLink]="['/portal/products', product.id, 'settings']">Product settings</a>
+                    <a class="action-item" [routerLink]="['/portal/products', product.id, 'guide']">Guides & Pages</a>
                     <a class="action-item">View on portal</a>
                   </div>
                 }
@@ -60,7 +60,7 @@
           } @empty {
             <tr>
               <td colspan="5" style="text-align: center; padding: 40px; color: #888;">
-                No products() found. Start by creating a new product.
+                No products found. Start by creating a new product.
               </td>
             </tr>
           }
@@ -135,7 +135,7 @@
                    [class.is-invalid]="productForm.get('slug')?.invalid && productForm.get('slug')?.touched"
                    placeholder="sample-product">
             <div class="form-help">
-              Public address: developer.fonepay.com/products()/{{ productForm.get('slug')?.value || 'sample-product' }}. Filled in from the name; you can edit it.
+              Public address: developer.fonepay.com/products/{{ productForm.get('slug')?.value || 'sample-product' }}. Filled in from the name; you can edit it.
             </div>
           </div>
 
@@ -158,4 +158,5 @@
     </div>
   </div>
 }
+
 

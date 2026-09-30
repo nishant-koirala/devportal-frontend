@@ -98,6 +98,24 @@
   margin-top: 8px;
 }
 
+.btn-primary {
+  background-color: var(--color-primary);
+  color: #fff;
+  padding: 12px 32px;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-family-main);
+  font-size: var(--text-button-size);
+  font-weight: var(--text-button-weight);
+  cursor: pointer;
+  transition: opacity 0.2s;
+  width: 100%;
+}
+
+.btn-primary:hover {
+  opacity: 0.9;
+}
+
 .forgot-link {
   color: var(--color-primary);
   font-size: 12px;
@@ -194,6 +212,23 @@
   text-align: center;
 }
 
+.btn-secondary {
+  background-color: transparent;
+  color: var(--color-text-main);
+  border: 1px solid var(--color-border);
+  padding: 12px 32px;
+  border-radius: 8px;
+  font-family: var(--font-family-main);
+  font-size: var(--text-button-size);
+  font-weight: var(--text-button-weight);
+  cursor: pointer;
+  transition: background-color 0.2s;
+  width: 100%;
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-background);
+}
 .input-field.error, .otp-field.error {
   border-color: #CE2027;
   background-color: #FFF2F2;

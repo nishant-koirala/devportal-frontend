@@ -36,6 +36,40 @@
   gap: 12px;
 }
 
+.btn-secondary {
+  background-color: #F9EBEB;
+  color: #C62828;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Inter', sans-serif;
+}
+
+.btn-secondary:hover {
+  background-color: #F8D6D4;
+}
+
+.btn-primary {
+  background-color: #C62828;
+  color: #FFFFFF;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: 'Inter', sans-serif;
+}
+
+.btn-primary:hover {
+  background-color: #B51A20;
+}
+
 .stat-cards-row {
   display: flex;
   gap: 20px;
