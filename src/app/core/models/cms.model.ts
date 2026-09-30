@@ -52,7 +52,11 @@ export interface SavePageRequest {
 
 export interface PageRevision {
   id: string;
+  published?: boolean;
+  commitMessage?: string;
   version: number;
   createdAt: string;
   createdBy: string;
 }
+
+

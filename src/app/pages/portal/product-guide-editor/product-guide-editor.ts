@@ -6,7 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
 import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { CmsService } from '../../../core/services/cms.service';
-import { PageTreeNodeResponse, PageMetaResponse, BlockDto, BlockType } from '../../../core/services/../models/cms.model';
+import { PageTreeNodeResponse, PageMetaResponse, BlockDto, BlockType, PageRevision } from '../../../core/models/cms.model';
 import { AdminProductService } from '../../../core/services/admin-product.service';
 import { Product } from '../../../core/services/../models/product.model';
 import { CmsSidebar } from '../../../components/cms-sidebar/cms-sidebar';
@@ -58,7 +58,7 @@ export class ProductGuideEditor implements OnInit {
   // Drawers
   isSettingsDrawerOpen: boolean = false;
   isRevisionDrawerOpen: boolean = false;
-  revisions: any[] = [];
+  revisions: PageRevision[] = [];
   isLoadingRevisions: boolean = false;
 
 
@@ -205,18 +205,18 @@ export class ProductGuideEditor implements OnInit {
     });
   }
 
-  addParameterToBlock(block: any) {
-    if (!block.data.parameters) block.data.parameters = [];
-    block.data.parameters.push({ name: '', type: '', description: '', required: true });
+  addParameterToBlock(block: BlockDto) {
+    if (!block.data['parameters']) block.data['parameters'] = [];
+    (block.data['parameters'] as unknown[]).push({ name: '', type: '', description: '', required: true });
   }
 
-  removeParameterFromBlock(block: any, index: number) {
-    if (block.data.parameters) {
-      block.data.parameters.splice(index, 1);
+  removeParameterFromBlock(block: BlockDto, index: number) {
+    if (block.data['parameters']) {
+      (block.data['parameters'] as unknown[]).splice(index, 1);
     }
   }
 
-  getDefaultDataForType(type: BlockType): any {
+  getDefaultDataForType(type: BlockType): Record<string, unknown> {
     switch(type) {
       case 'PARAGRAPH': return { text: '' };
       case 'HEADING': return { text: '', level: 2 };
@@ -232,37 +232,37 @@ export class ProductGuideEditor implements OnInit {
     }
   }
 
-  addTableRow(block: any) {
-    if (!block.data.rows) block.data.rows = [];
-    const colCount = block.data.headers?.length || 1;
+  addTableRow(block: BlockDto) {
+    if (!block.data['rows']) block.data['rows'] = [];
+    const colCount = (block.data['headers'] as string[])?.length || 1;
     const newRow = Array(colCount).fill('');
-    block.data.rows.push(newRow);
+    (block.data['rows'] as string[][]).push(newRow);
   }
 
-  removeTableRow(block: any, rowIndex: number) {
-    if (block.data.rows) {
-      block.data.rows.splice(rowIndex, 1);
+  removeTableRow(block: BlockDto, rowIndex: number) {
+    if (block.data['rows']) {
+      (block.data['rows'] as string[][]).splice(rowIndex, 1);
     }
   }
 
-  addTableColumn(block: any) {
-    if (!block.data.headers) block.data.headers = [];
-    block.data.headers.push('New Column');
-    if (block.data.rows) {
-      block.data.rows.forEach((row: any[]) => row.push(''));
+  addTableColumn(block: BlockDto) {
+    if (!block.data['headers']) block.data['headers'] = [];
+    (block.data['headers'] as string[]).push('New Column');
+    if (block.data['rows']) {
+      (block.data['rows'] as string[][]).forEach((row: string[]) => row.push(''));
     }
   }
 
-  removeTableColumn(block: any, colIndex: number) {
-    if (block.data.headers) {
-      block.data.headers.splice(colIndex, 1);
+  removeTableColumn(block: BlockDto, colIndex: number) {
+    if (block.data['headers']) {
+      (block.data['headers'] as string[]).splice(colIndex, 1);
     }
-    if (block.data.rows) {
-      block.data.rows.forEach((row: any[]) => row.splice(colIndex, 1));
+    if (block.data['rows']) {
+      (block.data['rows'] as string[][]).forEach((row: string[]) => row.splice(colIndex, 1));
     }
   }
 
-  trackByIndex(index: number, obj: any): any {
+  trackByIndex(index: number, obj: unknown): number {
     return index;
   }
 
@@ -306,7 +306,7 @@ export class ProductGuideEditor implements OnInit {
     ).subscribe({
       next: (res) => {
         this.activePageMeta = res.data;
-        this.pageState = (res.data.status?.toLowerCase() as any) || 'in_review';
+        this.pageState = (res.data.status?.toLowerCase() as 'draft' | 'in_review' | 'needs_changes' | 'published' | 'unpublished') || 'in_review';
         alert('Submitted for review successfully.');
       },
       error: (err) => {
@@ -327,7 +327,7 @@ export class ProductGuideEditor implements OnInit {
     ).subscribe({
       next: (res) => {
         this.activePageMeta = res.data;
-        this.pageState = (res.data.status?.toLowerCase() as any) || 'published';
+        this.pageState = (res.data.status?.toLowerCase() as 'draft' | 'in_review' | 'needs_changes' | 'published' | 'unpublished') || 'published';
         alert('Published successfully.');
       },
       error: (err) => {
@@ -495,6 +495,7 @@ export class ProductGuideEditor implements OnInit {
     });
   }
 }
+
 
 
 

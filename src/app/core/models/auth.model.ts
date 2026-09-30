@@ -13,10 +13,12 @@ export interface RegisterDto {
 }
 
 export interface AuthResponse {
-  accessToken: string;
+  token?: string;
+  accessToken?: string;
   refreshToken?: string;
   tokenType?: string;
   expiresIn?: number;
+  authStatus?: string;
   user: {
     id: string;
     email: string;

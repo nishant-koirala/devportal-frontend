@@ -1,0 +1,48 @@
+<ng-container *ngIf="block.type === 'heading'">
+  <h1 *ngIf="block.data.level === 1" style="font-size: 32px; font-weight: 700; margin-top: 48px; margin-bottom: 24px;">{{ block.data.text }}</h1>
+  <h2 *ngIf="block.data.level === 2" style="font-size: 24px; font-weight: 700; margin-top: 40px; margin-bottom: 20px;">{{ block.data.text }}</h2>
+  <h3 *ngIf="block.data.level === 3" style="font-size: 20px; font-weight: 600; margin-top: 32px; margin-bottom: 16px;">{{ block.data.text }}</h3>
+  <h4 *ngIf="(block.data.level || 4) >= 4" style="font-size: 16px; font-weight: 600; margin-top: 24px; margin-bottom: 12px;">{{ block.data.text }}</h4>
+</ng-container>
+
+<p *ngIf="block.type === 'paragraph'" style="font-size: 16px; line-height: 1.6; color: var(--text-secondary); margin-bottom: 16px;" [innerHTML]="block.data.text"></p>
+
+<div *ngIf="block.type === 'image'" style="margin: 32px 0;">
+  <img [src]="block.data.url" [alt]="block.data.caption || 'Image'" style="max-width: 100%; border-radius: 8px; border: 1px solid var(--border-color);">
+  <div *ngIf="block.data.caption" style="text-align: center; font-size: 14px; color: var(--text-tertiary); margin-top: 8px; font-style: italic;">{{ block.data.caption }}</div>
+</div>
+
+<div *ngIf="block.type === 'note'" style="background: var(--surface-hover); border-left: 4px solid var(--primary-color); padding: 16px 20px; margin: 24px 0; border-radius: 0 8px 8px 0;">
+  <p style="margin: 0; font-size: 16px; color: var(--text-primary);">{{ block.data.text }}</p>
+</div>
+
+<div *ngIf="block.type === 'table' && block.data.content" style="margin: 32px 0; overflow-x: auto;">
+  <table style="width: 100%; border-collapse: collapse; border: 1px solid var(--border-color); border-radius: 8px;">
+    <tr *ngFor="let row of block.data.content; let i = index">
+      <ng-container *ngIf="block.data.withHeadings && i === 0; else tableData">
+        <th *ngFor="let cell of row" style="background: var(--surface-hover); text-align: left; padding: 12px 16px; font-size: 14px; font-weight: 600; color: var(--text-primary); border-bottom: 1px solid var(--border-color);">
+          {{ cell }}
+        </th>
+      </ng-container>
+      <ng-template #tableData>
+        <td *ngFor="let cell of row" style="padding: 12px 16px; font-size: 14px; color: var(--text-secondary); border-bottom: 1px solid var(--border-color);">
+          {{ cell }}
+        </td>
+      </ng-template>
+    </tr>
+  </table>
+</div>
+
+<div *ngIf="block.type === 'card_list'" style="margin: 32px 0;">
+  <div class="grid-2">
+    <div class="grid-card" *ngFor="let item of block.data.content">
+      <h3 style="font-size: 18px; font-weight: 600; margin-bottom: 8px; color: var(--text-primary);">{{ item[0] }}</h3>
+      <p style="font-size: 14px; color: var(--text-secondary); margin: 0; line-height: 1.5;">{{ item[1] }}</p>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="block.type === 'code'" style="margin: 24px 0; background: #1a1415; border-radius: 8px; overflow: hidden;">
+  <div style="background: #2a2223; padding: 8px 16px; font-size: 12px; font-family: monospace; color: #a19596;">{{ block.data.language || 'text' }}</div>
+  <pre style="margin: 0; padding: 16px; font-family: 'Fira Code', monospace; font-size: 14px; color: #fff; overflow-x: auto;"><code>{{ block.data.code }}</code></pre>
+</div>

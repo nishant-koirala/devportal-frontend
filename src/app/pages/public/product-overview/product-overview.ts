@@ -1,5 +1,6 @@
 import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { BlockRenderer } from '../../../shared/components/block-renderer/block-renderer';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { catchError, finalize, switchMap } from 'rxjs/operators';
@@ -79,3 +80,4 @@ export class ProductOverview implements OnInit {
       });
   }
 }
+

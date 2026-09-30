@@ -1,6 +1,7 @@
 import { Component, OnInit, inject, ChangeDetectorRef, DestroyRef } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
+import { BlockRenderer } from '../../../shared/components/block-renderer/block-renderer';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { catchError, finalize } from 'rxjs/operators';
@@ -29,7 +30,7 @@ interface Block {
 @Component({
   selector: 'app-product-page',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, BlockRenderer],
   templateUrl: './product-page.html'
 })
 export class ProductPage implements OnInit {
@@ -76,3 +77,4 @@ export class ProductPage implements OnInit {
       });
   }
 }
+
