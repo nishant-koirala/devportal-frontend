@@ -3,8 +3,10 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
-import { AdminProductService, Product } from '../../../core/services/admin-product.service';
-import { CmsService, PageTreeNodeResponse, PageMetaResponse, BlockDto } from '../../../core/services/cms.service';
+import { AdminProductService } from '../../../core/services/admin-product.service';
+import { Product } from '../../../core/services/../models/product.model';
+import { CmsService } from '../../../core/services/cms.service';
+import { PageTreeNodeResponse, PageMetaResponse, BlockDto } from '../../../core/services/../models/cms.model';
 import { BlockEditor } from '../../../components/block-editor/block-editor';
 import { CmsSidebar } from '../../../components/cms-sidebar/cms-sidebar';
 import { EditorHeader } from '../../../components/editor-header/editor-header';
@@ -143,3 +145,5 @@ export class ProductOverview implements OnInit {
     this.isPreviewMode = !this.isPreviewMode;
   }
 }
+
+

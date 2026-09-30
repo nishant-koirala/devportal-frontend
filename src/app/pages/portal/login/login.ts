@@ -69,7 +69,7 @@ export class Login {
     this.cdr.detectChanges(); // force loading state to show
 
     const fullCode = `${this.otp1}${this.otp2}${this.otp3}${this.otp4}${this.otp5}${this.otp6}`;
-    this.authService.portalVerifyOtp({ email: this.email, code: fullCode }).subscribe({
+    this.authService.portalVerifyOtp({ email: this.email, otp: fullCode }).subscribe({
       next: (res) => {
         this.isVerifying = false;
         this.router.navigate(['/portal/dashboard']);
@@ -113,3 +113,4 @@ export class Login {
     this.router.navigate(['/portal/dashboard']);
   }
 }
+

@@ -1,7 +1,7 @@
 import { Component, Input, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { Product } from '../../core/services/admin-product.service';
+import { Product } from '../../core/services/../models/product.model';
 
 @Component({
   selector: 'app-editor-header',
@@ -24,3 +24,4 @@ export class EditorHeader {
     this.productMenuOpen = !this.productMenuOpen;
   }
 }
+

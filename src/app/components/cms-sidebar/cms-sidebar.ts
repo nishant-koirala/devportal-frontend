@@ -1,7 +1,8 @@
 import { Component, Input, Output, EventEmitter, inject, OnInit, OnChanges, SimpleChanges, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
-import { CmsService, PageTreeNodeResponse } from '../../core/services/cms.service';
+import { CmsService } from '../../core/services/cms.service';
+import { PageTreeNodeResponse } from '../../core/services/../models/cms.model';
 
 @Component({
   selector: 'app-cms-sidebar',
@@ -102,3 +103,4 @@ export class CmsSidebar implements OnInit, OnChanges {
     this.sectionMenuOpenId = this.sectionMenuOpenId === sectionId ? null : sectionId;
   }
 }
+

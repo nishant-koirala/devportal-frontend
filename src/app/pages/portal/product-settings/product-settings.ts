@@ -2,7 +2,8 @@ import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { AdminProductService, Product } from '../../../core/services/admin-product.service';
+import { AdminProductService } from '../../../core/services/admin-product.service';
+import { Product } from '../../../core/services/../models/product.model';
 
 @Component({
   selector: 'app-product-settings',
@@ -165,3 +166,4 @@ export class ProductSettings implements OnInit {
     this.showPublishErrorModal = false;
   }
 }
+

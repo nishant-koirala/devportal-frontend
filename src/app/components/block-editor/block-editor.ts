@@ -2,7 +2,7 @@ import { Component, Input, Output, EventEmitter, HostListener } from '@angular/c
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { BlockDto, BlockType } from '../../core/services/cms.service';
+import { BlockDto, BlockType } from '../../core/services/../models/cms.model';
 
 @Component({
   selector: 'app-block-editor',
@@ -160,3 +160,4 @@ export class BlockEditor {
     return index;
   }
 }
+

@@ -4,8 +4,10 @@ import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
 import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { CmsService, PageTreeNodeResponse, PageMetaResponse, BlockDto, BlockType } from '../../../core/services/cms.service';
-import { AdminProductService, Product } from '../../../core/services/admin-product.service';
+import { CmsService } from '../../../core/services/cms.service';
+import { PageTreeNodeResponse, PageMetaResponse, BlockDto, BlockType } from '../../../core/services/../models/cms.model';
+import { AdminProductService } from '../../../core/services/admin-product.service';
+import { Product } from '../../../core/services/../models/product.model';
 import { CmsSidebar } from '../../../components/cms-sidebar/cms-sidebar';
 import { EditorHeader } from '../../../components/editor-header/editor-header';
 
@@ -302,7 +304,7 @@ export class ProductGuideEditor implements OnInit {
     ).subscribe({
       next: (res) => {
         this.activePageMeta = res.data;
-        this.pageState = res.data.status?.toLowerCase() || 'in_review';
+        this.pageState = (res.data.status?.toLowerCase() as any) || 'in_review';
         alert('Submitted for review successfully.');
       },
       error: (err) => {
@@ -323,7 +325,7 @@ export class ProductGuideEditor implements OnInit {
     ).subscribe({
       next: (res) => {
         this.activePageMeta = res.data;
-        this.pageState = res.data.status?.toLowerCase() || 'published';
+        this.pageState = (res.data.status?.toLowerCase() as any) || 'published';
         alert('Published successfully.');
       },
       error: (err) => {
@@ -491,3 +493,6 @@ export class ProductGuideEditor implements OnInit {
     });
   }
 }
+
+
+

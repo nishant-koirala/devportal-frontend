@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { environment } from '../../../environments/environment';
+import { ApiResponse } from '../models/pagination.model';
+import { LoginCredentials, RegisterDto, ResetPasswordRequest, OtpRequest } from '../models/auth.model';
 
 @Injectable({
   providedIn: 'root'
@@ -15,38 +17,38 @@ export class AuthService {
   private tokenSubject = new BehaviorSubject<string | null>(this.getToken());
   public isLoggedIn$ = this.tokenSubject.asObservable();
 
-  login(credentials: any) {
-    return this.http.post<any>(`${this.baseUrl}/login`, credentials).pipe(
+  login(credentials: LoginCredentials) {
+    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/login`, credentials).pipe(
       tap(res => this.handleAuthResponse(res))
     );
   }
 
-  portalLogin(credentials: any) {
-    return this.http.post<any>(`${this.baseUrl}/portal/login`, credentials).pipe(
+  portalLogin(credentials: LoginCredentials) {
+    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/portal/login`, credentials).pipe(
       tap(res => this.handleAuthResponse(res))
     );
   }
 
-  register(userData: any) {
-    return this.http.post<any>(`${this.baseUrl}/register`, userData).pipe(
+  register(userData: RegisterDto) {
+    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/register`, userData).pipe(
       tap(res => this.handleAuthResponse(res))
     );
   }
 
   forgotPassword(email: string) {
-    return this.http.post<any>(`${this.baseUrl}/forgot-password`, { email });
+    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/forgot-password`, { email });
   }
 
-  resetPassword(data: any) {
-    return this.http.post<any>(`${this.baseUrl}/reset-password`, data);
+  resetPassword(data: ResetPasswordRequest) {
+    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/reset-password`, data);
   }
 
-  verifyOtp(data: any) {
-    return this.http.post<any>(`${this.baseUrl}/otp-verify`, data);
+  verifyOtp(data: OtpRequest) {
+    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/otp-verify`, data);
   }
 
-  portalVerifyOtp(data: any) {
-    return this.http.post<any>(`${this.baseUrl}/portal/otp/verify`, data).pipe(
+  portalVerifyOtp(data: OtpRequest) {
+    return this.http.post<ApiResponse<any>>(`${this.baseUrl}/portal/otp/verify`, data).pipe(
       tap(res => this.handleAuthResponse(res))
     );
   }
@@ -55,7 +57,7 @@ export class AuthService {
     return localStorage.getItem('token');
   }
 
-  private handleAuthResponse(response: any) {
+  private handleAuthResponse(response: ApiResponse<any>) {
     if (response?.data?.token) {
       localStorage.setItem('token', response.data.token);
       this.tokenSubject.next(response.data.token);

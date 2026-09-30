@@ -3,8 +3,9 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { AdminProductService, Product } from '../../../core/services/admin-product.service';
-import { BlockDto, BlockType } from '../../../core/services/cms.service';
+import { AdminProductService } from '../../../core/services/admin-product.service';
+import { Product } from '../../../core/services/../models/product.model';
+import { BlockDto, BlockType } from '../../../core/services/../models/cms.model';
 
 @Component({
   selector: 'app-products',
@@ -133,3 +134,5 @@ export class Products implements OnInit {
     });
   }
 }
+
+
