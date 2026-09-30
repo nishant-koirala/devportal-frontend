@@ -10,7 +10,7 @@
 
   <div class="content-wrapper">
     
-    @switch (step) {
+    @switch (step()) {
       
       @case ('LOGIN') {
         <div class="form-card">
@@ -20,7 +20,7 @@
           </div>
 
           <form class="login-form" (ngSubmit)="onSubmitLogin()">
-            @if (loginError) {
+            @if (loginError()) {
               <div class="error-banner">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M8 0C3.58 0 0 3.58 0 8C0 12.42 3.58 16 8 16C12.42 16 16 12.42 16 8C16 3.58 12.42 0 8 0ZM8.8 12H7.2V10.4H8.8V12ZM8.8 8.8H7.2V4H8.8V8.8Z" fill="#CE2027"/>
@@ -31,18 +31,18 @@
 
             <div class="input-group">
               <label class="input-label">Email address</label>
-              <input type="email" class="input-field" [class.error]="loginError" [(ngModel)]="email" name="email" placeholder="you@company.com" />
+              <input type="email" class="input-field" [class.error]="loginError()" [ngModel]="email()" (ngModelChange)="email.set($event)" name="email" placeholder="you@company.com" />
             </div>
 
             <div class="input-group">
               <label class="input-label">Password</label>
-              <input type="password" class="input-field" [class.error]="loginError" [(ngModel)]="password" name="password" placeholder="••••••••" />
+              <input type="password" class="input-field" [class.error]="loginError()" [ngModel]="password()" (ngModelChange)="password.set($event)" name="password" placeholder="••••••••" />
               <a href="#" class="forgot-link">Forgot password?</a>
             </div>
 
             <div class="actions-group">
-              <button type="submit" class="btn-primary" [disabled]="isLoggingIn">
-                {{ isLoggingIn ? 'Logging in...' : 'Log in' }}
+              <button type="submit" class="btn-primary" [disabled]="isLoggingIn()">
+                {{ isLoggingIn() ? 'Logging in...' : 'Log in' }}
               </button>
             </div>
           </form>
@@ -57,7 +57,7 @@
           </div>
 
           <form class="login-form" (ngSubmit)="onSubmitCode()">
-            @if (codeError) {
+            @if (codeError()) {
               <div class="error-banner">
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M8 0C3.58 0 0 3.58 0 8C0 12.42 3.58 16 8 16C12.42 16 16 12.42 16 8C16 3.58 12.42 0 8 0ZM8.8 12H7.2V10.4H8.8V12ZM8.8 8.8H7.2V4H8.8V8.8Z" fill="#CE2027"/>
@@ -68,19 +68,19 @@
 
             <div class="input-group">
               <div class="otp-inputs">
-                <input type="text" class="otp-field" [class.error]="codeError" maxlength="1" [(ngModel)]="otp1" name="otp1" (keyup)="onOtpInput($event, 1)" />
-                <input type="text" class="otp-field" [class.error]="codeError" maxlength="1" [(ngModel)]="otp2" name="otp2" (keyup)="onOtpInput($event, 2)" />
-                <input type="text" class="otp-field" [class.error]="codeError" maxlength="1" [(ngModel)]="otp3" name="otp3" (keyup)="onOtpInput($event, 3)" />
-                <input type="text" class="otp-field" [class.error]="codeError" maxlength="1" [(ngModel)]="otp4" name="otp4" (keyup)="onOtpInput($event, 4)" />
-                <input type="text" class="otp-field" [class.error]="codeError" maxlength="1" [(ngModel)]="otp5" name="otp5" (keyup)="onOtpInput($event, 5)" />
-                <input type="text" class="otp-field" [class.error]="codeError" maxlength="1" [(ngModel)]="otp6" name="otp6" (keyup)="onOtpInput($event, 6)" />
+                <input type="text" class="otp-field" [class.error]="codeError()" maxlength="1" [ngModel]="otp1()" (ngModelChange)="otp1.set($event)" name="otp1" (keyup)="onOtpInput($event, 1)" />
+                <input type="text" class="otp-field" [class.error]="codeError()" maxlength="1" [ngModel]="otp2()" (ngModelChange)="otp2.set($event)" name="otp2" (keyup)="onOtpInput($event, 2)" />
+                <input type="text" class="otp-field" [class.error]="codeError()" maxlength="1" [ngModel]="otp3()" (ngModelChange)="otp3.set($event)" name="otp3" (keyup)="onOtpInput($event, 3)" />
+                <input type="text" class="otp-field" [class.error]="codeError()" maxlength="1" [ngModel]="otp4()" (ngModelChange)="otp4.set($event)" name="otp4" (keyup)="onOtpInput($event, 4)" />
+                <input type="text" class="otp-field" [class.error]="codeError()" maxlength="1" [ngModel]="otp5()" (ngModelChange)="otp5.set($event)" name="otp5" (keyup)="onOtpInput($event, 5)" />
+                <input type="text" class="otp-field" [class.error]="codeError()" maxlength="1" [ngModel]="otp6()" (ngModelChange)="otp6.set($event)" name="otp6" (keyup)="onOtpInput($event, 6)" />
               </div>
               <a href="#" class="forgot-link" (click)="continueToBackupCodes()">Use a backup code instead</a>
             </div>
 
             <div class="actions-group">
-              <button type="submit" class="btn-primary" [disabled]="isVerifying">
-                {{ isVerifying ? 'Verifying...' : 'Verify' }}
+              <button type="submit" class="btn-primary" [disabled]="isVerifying()">
+                {{ isVerifying() ? 'Verifying...' : 'Verify' }}
               </button>
             </div>
           </form>
@@ -134,3 +134,5 @@
     </div>
   </div>
 </div>
+
+

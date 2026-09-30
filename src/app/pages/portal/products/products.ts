@@ -1,11 +1,10 @@
-import { Component, OnInit, inject, ChangeDetectorRef, HostListener } from '@angular/core';
+import { Component, OnInit, inject, HostListener, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { DragDropModule, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { AdminProductService } from '../../../core/services/admin-product.service';
 import { Product } from '../../../core/services/../models/product.model';
-import { BlockDto, BlockType } from '../../../core/services/../models/cms.model';
 
 @Component({
   selector: 'app-products',
@@ -16,36 +15,35 @@ import { BlockDto, BlockType } from '../../../core/services/../models/cms.model'
 })
 export class Products implements OnInit {
   private productService = inject(AdminProductService);
-  private cdr = inject(ChangeDetectorRef);
   private fb = inject(FormBuilder);
 
-  public products: Product[] = [];
-  public loading = true;
-  public error = '';
+  products = signal<Product[]>([]);
+  loading = signal(true);
+  error = signal('');
 
   // Dropdown State
-  public activeMenuId: string | null = null;
+  activeMenuId = signal<string | null>(null);
 
   @HostListener('document:click')
   onDocumentClick() {
-    if (this.activeMenuId) {
-      this.activeMenuId = null;
+    if (this.activeMenuId()) {
+      this.activeMenuId.set(null);
     }
   }
 
   toggleMenu(productId: string, event: Event) {
     event.stopPropagation();
-    if (this.activeMenuId === productId) {
-      this.activeMenuId = null;
+    if (this.activeMenuId() === productId) {
+      this.activeMenuId.set(null);
     } else {
-      this.activeMenuId = productId;
+      this.activeMenuId.set(productId);
     }
   }
 
   // Modal State
-  public isModalOpen = false;
-  public submitting = false;
-  public productForm!: FormGroup;
+  isModalOpen = signal(false);
+  submitting = signal(false);
+  productForm!: FormGroup;
 
   ngOnInit() {
     this.initForm();
@@ -59,22 +57,19 @@ export class Products implements OnInit {
       audience: ['PUBLIC', Validators.required],
       slug: ['', [Validators.required, Validators.pattern(/^[a-z0-9]+(?:-[a-z0-9]+)*$/)]],
       shortDescription: [''],
-      status: ['DRAFT'] // always draft
+      status: ['DRAFT']
     });
   }
 
   openModal() {
     this.initForm();
-    this.isModalOpen = true;
-    this.cdr.detectChanges();
+    this.isModalOpen.set(true);
   }
 
   closeModal() {
-    this.isModalOpen = false;
-    this.cdr.detectChanges();
+    this.isModalOpen.set(false);
   }
 
-  // Auto-generate slug from name if user hasn't typed in slug manually
   onNameChange() {
     const nameControl = this.productForm.get('name');
     const slugControl = this.productForm.get('slug');
@@ -95,44 +90,39 @@ export class Products implements OnInit {
       return;
     }
 
-    this.submitting = true;
+    this.submitting.set(true);
     this.productService.createProduct(this.productForm.value).subscribe({
       next: (res) => {
-        this.submitting = false;
+        this.submitting.set(false);
         this.closeModal();
         this.loadProducts();
       },
       error: (err) => {
         console.error(err);
         alert('Failed to create product. ' + (err.error?.message || err.message));
-        this.submitting = false;
-        this.cdr.detectChanges();
+        this.submitting.set(false);
       }
     });
   }
 
   loadProducts() {
-    this.loading = true;
+    this.loading.set(true);
     this.productService.getProducts(0, 50).subscribe({
       next: (res: any) => {
         const payload = res?.data;
         if (payload && Array.isArray(payload.content)) {
-          this.products = payload.content;
+          this.products.set(payload.content);
         } else if (Array.isArray(payload)) {
-          this.products = payload;
+          this.products.set(payload);
         } else {
-          this.products = [];
+          this.products.set([]);
         }
-        this.loading = false;
-        this.cdr.detectChanges();
+        this.loading.set(false);
       },
       error: (err) => {
-        this.error = 'Failed to load products. ' + err.message;
-        this.loading = false;
-        this.cdr.detectChanges();
+        this.error.set('Failed to load products. ' + err.message);
+        this.loading.set(false);
       }
     });
   }
 }
-
-

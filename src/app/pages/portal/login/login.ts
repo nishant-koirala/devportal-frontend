@@ -1,4 +1,4 @@
-import { Component, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../core/services/auth.service';
@@ -16,69 +16,62 @@ type AuthStep = 'LOGIN' | '2FA_CODE' | 'ENROLL_APP' | 'BACKUP_CODES';
 export class Login {
   private authService = inject(AuthService);
   private router = inject(Router);
-  private cdr = inject(ChangeDetectorRef);
 
-  step: AuthStep = 'LOGIN';
+  step = signal<AuthStep>('LOGIN');
   
   // Login form state
-  email = '';
-  password = '';
-  loginError = false;
+  email = signal('');
+  password = signal('');
+  loginError = signal(false);
 
   // 2FA code state
-  otp1 = ''; otp2 = ''; otp3 = '';
-  otp4 = ''; otp5 = ''; otp6 = '';
-  codeError = false;
+  otp1 = signal(''); otp2 = signal(''); otp3 = signal('');
+  otp4 = signal(''); otp5 = signal(''); otp6 = signal('');
+  codeError = signal(false);
 
   // Loading states
-  isLoggingIn = false;
-  isVerifying = false;
+  isLoggingIn = signal(false);
+  isVerifying = signal(false);
 
   // Real login integration
   onSubmitLogin() {
-    if (this.isLoggingIn) return;
-    this.isLoggingIn = true;
-    this.loginError = false;
-    this.cdr.detectChanges(); // force loading state to show
+    if (this.isLoggingIn()) return;
+    this.isLoggingIn.set(true);
+    this.loginError.set(false);
 
-    this.authService.portalLogin({ email: this.email, password: this.password }).subscribe({
+    this.authService.portalLogin({ email: this.email(), password: this.password() }).subscribe({
       next: (res) => {
-        this.isLoggingIn = false;
+        this.isLoggingIn.set(false);
         // Check if 2FA is required or not based on backend response
         if (res.data?.authStatus === 'OTP_REQUIRED') {
-          this.step = '2FA_CODE';
+          this.step.set('2FA_CODE');
         } else {
           // Logged in directly (if 2FA is disabled)
           this.router.navigate(['/portal/dashboard']);
         }
-        this.cdr.detectChanges();
       },
       error: (err) => {
-        this.isLoggingIn = false;
-        this.loginError = true;
-        this.cdr.detectChanges();
+        this.isLoggingIn.set(false);
+        this.loginError.set(true);
       }
     });
   }
 
   // Real 2FA submit
   onSubmitCode() {
-    if (this.isVerifying) return;
-    this.isVerifying = true;
-    this.codeError = false;
-    this.cdr.detectChanges(); // force loading state to show
+    if (this.isVerifying()) return;
+    this.isVerifying.set(true);
+    this.codeError.set(false);
 
-    const fullCode = `${this.otp1}${this.otp2}${this.otp3}${this.otp4}${this.otp5}${this.otp6}`;
-    this.authService.portalVerifyOtp({ email: this.email, otp: fullCode }).subscribe({
+    const fullCode = `${this.otp1()}${this.otp2()}${this.otp3()}${this.otp4()}${this.otp5()}${this.otp6()}`;
+    this.authService.portalVerifyOtp({ email: this.email(), otp: fullCode }).subscribe({
       next: (res) => {
-        this.isVerifying = false;
+        this.isVerifying.set(false);
         this.router.navigate(['/portal/dashboard']);
-        this.cdr.detectChanges();
       },
       error: (err) => {
-        this.isVerifying = false;
-        this.codeError = true;
-        this.cdr.detectChanges();
+        this.isVerifying.set(false);
+        this.codeError.set(true);
       }
     });
   }
@@ -105,7 +98,7 @@ export class Login {
 
   // Enrollment actions
   continueToBackupCodes() {
-    this.step = 'BACKUP_CODES';
+    this.step.set('BACKUP_CODES');
   }
 
   finishEnrollment() {
@@ -113,4 +106,3 @@ export class Login {
     this.router.navigate(['/portal/dashboard']);
   }
 }
-

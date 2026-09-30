@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
 
@@ -18,10 +19,12 @@ export class ConfigDetail implements OnInit {
   configDescription = 'How long a developer\'s session stays valid with no activity before they are signed out. Key: session.idle.ttl.';
   configValue = '7 days';
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(private route: ActivatedRoute, private router: Router) {}
 
   ngOnInit() {
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
       this.configId = params.get('id');
     });
   }
@@ -30,3 +33,4 @@ export class ConfigDetail implements OnInit {
     this.router.navigate(['/portal/config/edit', this.configId]);
   }
 }
+

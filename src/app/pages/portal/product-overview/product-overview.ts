@@ -1,4 +1,5 @@
-import { Component, inject, OnInit, ChangeDetectorRef, HostListener } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectorRef, HostListener, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -20,6 +21,7 @@ import { EditorHeader } from '../../../components/editor-header/editor-header';
 })
 export class ProductOverview implements OnInit {
   private route = inject(ActivatedRoute);
+  private destroyRef = inject(DestroyRef);
   private productService = inject(AdminProductService);
   private cdr = inject(ChangeDetectorRef);
   private cmsService = inject(CmsService);
@@ -37,7 +39,7 @@ export class ProductOverview implements OnInit {
   }
 
   ngOnInit() {
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
       this.productId = params.get('id') || '';
       if (this.productId) {
         this.loadProduct();

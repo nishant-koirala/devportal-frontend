@@ -1,17 +1,17 @@
 <div class="page-container">
   
   <header class="page-header">
-    <h1 class="page-title">Products</h1>
+    <h1 class="page-title">products()</h1>
     <button class="btn-primary" (click)="openModal()">
       New product
     </button>
   </header>
 
   <div class="table-card">
-    @if (loading) {
-      <div style="padding: 40px; text-align: center; color: #888;">Loading products...</div>
-    } @else if (error) {
-      <div style="padding: 40px; text-align: center; color: #CE2027;">{{ error }}</div>
+    @if (loading()) {
+      <div style="padding: 40px; text-align: center; color: #888;">loading() products()...</div>
+    } @else if (error()) {
+      <div style="padding: 40px; text-align: center; color: #CE2027;">{{ error() }}</div>
     } @else {
       <table class="data-table">
         <thead>
@@ -24,11 +24,11 @@
           </tr>
         </thead>
         <tbody>
-          @for (product of products; track product.id; let i = $index) {
-            <tr [class.row-active]="activeMenuId === product.id">
+          @for (product of products(); track product.id; let i = $index) {
+            <tr [class.row-active]="activeMenuId() === product.id">
               <td>{{ product.displayOrder ?? (i + 1) }}</td>
               <td>
-                <a class="product-name" [routerLink]="['/portal/products', product.id, 'guide']" style="cursor: pointer;">{{ product.name }}</a>
+                <a class="product-name" [routerLink]="['/portal/products()', product.id, 'guide']" style="cursor: pointer;">{{ product.name }}</a>
               </td>
               <td>0</td>
               <td>
@@ -43,15 +43,15 @@
               </td>
               <td style="text-align: right; position: relative;">
                 <button class="action-btn" 
-                        [class.active]="activeMenuId === product.id"
+                        [class.active]="activeMenuId() === product.id"
                         (click)="toggleMenu(product.id, $event)">
                   <span class="material-symbols-outlined" style="font-size: 20px;">more_horiz</span>
                 </button>
 
-                @if (activeMenuId === product.id) {
+                @if (activeMenuId() === product.id) {
                   <div class="action-menu" (click)="$event.stopPropagation()">
-                    <a class="action-item" [routerLink]="['/portal/products', product.id, 'settings']">Product settings</a>
-                    <a class="action-item" [routerLink]="['/portal/products', product.id, 'guide']">Guides & Pages</a>
+                    <a class="action-item" [routerLink]="['/portal/products()', product.id, 'settings']">Product settings</a>
+                    <a class="action-item" [routerLink]="['/portal/products()', product.id, 'guide']">Guides & Pages</a>
                     <a class="action-item">View on portal</a>
                   </div>
                 }
@@ -60,7 +60,7 @@
           } @empty {
             <tr>
               <td colspan="5" style="text-align: center; padding: 40px; color: #888;">
-                No products found. Start by creating a new product.
+                No products() found. Start by creating a new product.
               </td>
             </tr>
           }
@@ -69,7 +69,7 @@
 
       <!-- Pagination Footer -->
       <div class="pagination-footer">
-        <div class="pagination-info">Showing 1–{{ products.length }} of {{ products.length }}</div>
+        <div class="pagination-info">Showing 1–{{ products().length }} of {{ products().length }}</div>
         <div class="pagination-controls">
           <button class="page-nav" disabled><span class="material-symbols-outlined" style="font-size: 14px;">chevron_left</span> Previous</button>
           <button class="page-num active">1</button>
@@ -82,7 +82,7 @@
 </div>
 
 <!-- Create Product Modal -->
-@if (isModalOpen) {
+@if (isModalOpen()) {
   <div class="modal-overlay" (click)="closeModal()">
     <div class="modal-content" (click)="$event.stopPropagation()">
       <div class="modal-header">
@@ -135,7 +135,7 @@
                    [class.is-invalid]="productForm.get('slug')?.invalid && productForm.get('slug')?.touched"
                    placeholder="sample-product">
             <div class="form-help">
-              Public address: developer.fonepay.com/products/{{ productForm.get('slug')?.value || 'sample-product' }}. Filled in from the name; you can edit it.
+              Public address: developer.fonepay.com/products()/{{ productForm.get('slug')?.value || 'sample-product' }}. Filled in from the name; you can edit it.
             </div>
           </div>
 
@@ -150,11 +150,12 @@
 
         <div class="modal-footer">
           <button type="button" class="btn-cancel" (click)="closeModal()">Cancel</button>
-          <button type="submit" class="btn-primary" [disabled]="submitting">
-            {{ submitting ? 'Creating...' : 'Create product' }}
+          <button type="submit" class="btn-primary" [disabled]="submitting()">
+            {{ submitting() ? 'Creating...' : 'Create product' }}
           </button>
         </div>
       </form>
     </div>
   </div>
 }
+

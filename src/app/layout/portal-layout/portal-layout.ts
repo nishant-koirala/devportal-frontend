@@ -1,4 +1,5 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, DestroyRef, signal, computed } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
@@ -13,69 +14,70 @@ import { AuthService } from '../../core/services/auth.service';
 export class PortalLayoutComponent implements OnInit {
   private authService = inject(AuthService);
   private router = inject(Router);
+  private destroyRef = inject(DestroyRef);
 
-  public userName = '';
-  public isSidebarCollapsed = false;
+  userName = signal('');
+  isSidebarCollapsed = signal(false);
+  currentUrl = signal('');
+
+  navSections = computed(() => {
+    const url = this.currentUrl();
+    const sections = [
+      {
+        title: 'Overview',
+        items: [
+          { label: 'Dashboard', route: '/portal/dashboard' }
+        ]
+      },
+      {
+        title: 'Content',
+        items: [
+          { label: 'Products', route: '/portal/products' },
+          { label: 'Pages', route: '/portal/pages' },
+          { label: 'Assets', route: '/portal/assets' },
+          { label: 'Review queue', route: '/portal/reviews' }
+        ]
+      },
+      {
+        title: 'Access and developers',
+        items: [
+          { label: 'Access requests', route: '/portal/access' },
+          { label: 'Developers', route: '/portal/developers' },
+          { label: 'Announcements', route: '/portal/announcements' }
+        ]
+      },
+      {
+        title: 'System',
+        items: [
+          { label: 'Internal users', route: '/portal/internal-users' },
+          { label: 'Role profiles', route: '/portal/role-profiles' },
+          { label: 'Audit log', route: '/portal/audit-log' },
+          { label: 'Config', route: '/portal/config' }
+        ]
+      }
+    ];
+
+    return sections.map(section => ({
+      ...section,
+      items: section.items.map(item => ({
+        ...item,
+        active: url.startsWith(item.route)
+      }))
+    }));
+  });
 
   ngOnInit() {
-    this.userName = this.authService.getUserName();
+    this.userName.set(this.authService.getUserName());
+    this.currentUrl.set(this.router.url);
     
-    // Simple way to handle active states dynamically
-    this.router.events.subscribe(() => {
-      this.updateActiveStates();
+    this.router.events.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => {
+      this.currentUrl.set(this.router.url);
     });
-    // Set initial
-    this.updateActiveStates();
   }
 
   toggleSidebar() {
-    this.isSidebarCollapsed = !this.isSidebarCollapsed;
+    this.isSidebarCollapsed.update(c => !c);
   }
-
-  updateActiveStates() {
-    const currentUrl = this.router.url;
-    this.navSections.forEach(section => {
-      section.items.forEach(item => {
-        // Just checking if the URL starts with the item route for prefix matching
-        item.active = currentUrl.startsWith(item.route);
-      });
-    });
-  }
-
-  navSections = [
-    {
-      title: 'Overview',
-      items: [
-        { label: 'Dashboard', route: '/portal/dashboard', active: true }
-      ]
-    },
-    {
-      title: 'Content',
-      items: [
-        { label: 'Products', route: '/portal/products', active: false },
-        { label: 'Pages', route: '/portal/pages', active: false },
-        { label: 'Assets', route: '/portal/assets', active: false },
-        { label: 'Review queue', route: '/portal/reviews', active: false }
-      ]
-    },
-    {
-      title: 'Access and developers',
-      items: [
-        { label: 'Access requests', route: '/portal/access', active: false },
-        { label: 'Developers', route: '/portal/developers', active: false },
-        { label: 'Announcements', route: '/portal/announcements', active: false }
-      ]
-    },
-    {
-      title: 'System',
-      items: [
-        { label: 'Internal users', route: '/portal/internal-users', active: false },
-        { label: 'Role profiles', route: '/portal/role-profiles', active: false },
-        { label: 'Audit log', route: '/portal/audit-log', active: false },
-        { label: 'Config', route: '/portal/config', active: false }
-      ]
-    }
-  ];
 
   logout() {
     this.authService.logout();

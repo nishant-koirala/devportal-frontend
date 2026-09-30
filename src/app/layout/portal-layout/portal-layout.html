@@ -22,7 +22,7 @@
           <span class="material-symbols-outlined">person</span>
         </div>
         <div class="user-info">
-          <span class="user-name">{{ userName }}</span>
+          <span class="user-name">{{ userName() }}</span>
           <span class="user-role">Super Admin</span>
         </div>
       </div>
@@ -31,9 +31,9 @@
 
   <div class="body-container">
     <!-- Sidebar Navigation -->
-    <aside class="sidebar" [class.collapsed]="isSidebarCollapsed">
+    <aside class="sidebar" [class.collapsed]="isSidebarCollapsed()">
       <nav class="sidebar-nav">
-        @for (section of navSections; track section.title) {
+        @for (section of navSections(); track section.title) {
           <div class="nav-section">
             <div class="nav-section-title">{{ section.title }}</div>
             @for (item of section.items; track item.route) {
@@ -52,3 +52,4 @@
     </main>
   </div>
 </div>
+

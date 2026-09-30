@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule, ActivatedRoute, Router } from '@angular/router';
@@ -23,10 +24,12 @@ export class ConfigEdit implements OnInit {
 
   isConfirmSaveModalOpen = false;
 
+  private destroyRef = inject(DestroyRef);
+
   constructor(private route: ActivatedRoute, private router: Router) {}
 
   ngOnInit() {
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
       this.configId = params.get('id');
     });
   }
@@ -48,3 +51,4 @@ export class ConfigEdit implements OnInit {
     this.router.navigate(['/portal/config', this.configId]);
   }
 }
+

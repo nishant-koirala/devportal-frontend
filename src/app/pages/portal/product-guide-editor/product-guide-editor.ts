@@ -1,4 +1,5 @@
-import { Component, inject, OnInit, ChangeDetectorRef, HostListener, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectorRef, HostListener, ViewChild, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -20,6 +21,7 @@ import { EditorHeader } from '../../../components/editor-header/editor-header';
 })
 export class ProductGuideEditor implements OnInit {
   private route = inject(ActivatedRoute);
+  private destroyRef = inject(DestroyRef);
   private cmsService = inject(CmsService);
   private productService = inject(AdminProductService);
   private cdr = inject(ChangeDetectorRef);
@@ -119,7 +121,7 @@ export class ProductGuideEditor implements OnInit {
   }
 
   ngOnInit() {
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
       this.productId = params.get('id') || '';
       if (this.productId) {
         this.loadProduct();

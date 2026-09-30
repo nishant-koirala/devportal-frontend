@@ -2,10 +2,10 @@
   <app-editor-header [product]="product" *ngIf="!isPreviewMode">
     <div status-badge *ngIf="product">
       <span class="product-status-badge" 
-            [class.pe-badge-draft]="product.status === 'DRAFT'"
-            [class.pe-badge-review]="product.status === 'IN_REVIEW'"
-            [class.pe-badge-published]="product.status === 'PUBLISHED'">
-        {{ product.status === 'DRAFT' ? 'Draft' : product.status === 'IN_REVIEW' ? 'In review' : product.status === 'PUBLISHED' ? 'Published' : product.status }}
+            [class.pe-badge-draft]="product?.status === 'DRAFT'"
+            [class.pe-badge-review]="product?.status === 'IN_REVIEW'"
+            [class.pe-badge-published]="product?.status === 'PUBLISHED'">
+        {{ product?.status === 'DRAFT' ? 'Draft' : product?.status === 'IN_REVIEW' ? 'In review' : product?.status === 'PUBLISHED' ? 'Published' : product?.status }}
       </span>
     </div>
   </app-editor-header>
@@ -23,17 +23,17 @@
         <!-- Badge and Action Row -->
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;" *ngIf="product && !isPreviewMode">
           <div style="background-color: #f8e0cc; border: 1px solid #843d00; border-radius: 8px; padding: 2px 12px; color: #843d00; font-size: 12px; font-weight: 500;">
-            {{ product.status === 'PUBLISHED' ? 'Published · Draft changes' : 'Draft' }}
+            {{ product?.status === 'PUBLISHED' ? 'Published · Draft changes' : 'Draft' }}
           </div>
           <div style="display: flex; gap: 8px; align-items: center;">
             <button class="pe-btn-outline" style="border: 1px solid #ce2027; color: #ce2027; border-radius: 8px;" (click)="preview()">Preview</button>
-            <button class="pe-btn-outline" style="background-color: #f5d2d4; border: none; color: #7c1317; border-radius: 8px;" (click)="saveDraft()" *ngIf="product.status !== 'IN_REVIEW'" [disabled]="isSaving">
+            <button class="pe-btn-outline" style="background-color: #f5d2d4; border: none; color: #7c1317; border-radius: 8px;" (click)="saveDraft()" *ngIf="product?.status !== 'IN_REVIEW'" [disabled]="isSaving">
               {{ isSaving ? 'Saving...' : 'Save draft' }}
             </button>
-            <button class="pe-btn-primary" style="border-radius: 8px;" (click)="submitForReview()" *ngIf="product.status === 'DRAFT'" [disabled]="isSaving">
+            <button class="pe-btn-primary" style="border-radius: 8px;" (click)="submitForReview()" *ngIf="product?.status === 'DRAFT'" [disabled]="isSaving">
               {{ isSaving ? 'Submitting...' : 'Submit for review' }}
             </button>
-            <button class="pe-btn-outline text-danger" style="border-radius: 8px;" (click)="withdrawReview()" *ngIf="product.status === 'IN_REVIEW'" [disabled]="isSaving">
+            <button class="pe-btn-outline text-danger" style="border-radius: 8px;" (click)="withdrawReview()" *ngIf="product?.status === 'IN_REVIEW'" [disabled]="isSaving">
               Withdraw review
             </button>
             <!-- Page Menu Icon -->
@@ -104,3 +104,5 @@
     </div>
   </div>
 </div>
+
+

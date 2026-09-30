@@ -1,4 +1,5 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef, DestroyRef } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -33,6 +34,7 @@ interface Block {
 })
 export class ProductPage implements OnInit {
   private route = inject(ActivatedRoute);
+  private destroyRef = inject(DestroyRef);
   private http = inject(HttpClient);
   private cdr = inject(ChangeDetectorRef);
   
@@ -43,7 +45,7 @@ export class ProductPage implements OnInit {
   loading = true;
 
   ngOnInit() {
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(params => {
       this.productSlug = params.get('id') || '';
       this.pageSlug = params.get('pageId') || '';
       if (this.productSlug && this.pageSlug) {
